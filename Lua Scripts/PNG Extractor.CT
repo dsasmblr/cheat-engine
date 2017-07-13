@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries/>
+  <UserdefinedSymbols/>
+  <LuaScript>--##### PNG Dumper Lua Script for Cheat Engine
+--##### Author: Stephen Chapman
+--##### Github: http://github.com/dsasmblr
+--##### Website: http://dsasmblr.com/blog
+--##### YouTube: http://youtube.com/seowhistleblower
+
+--=== Script Start ===--
+function pngScanFunc()
+
+  --Variables
+  local pngScan
+  local iendScan
+  local wonky
+  local pngScanCount = 0
+  local count
+
+  --Scan for PNG magic
+  --Bytes up through IHDR included to avoid false positives
+  pngScan = AOBScan("89 50 4E 47 0D 0A 1A 0A * * * * 49 48 44 52","")
+
+  --Scan for IEND (PNG format ending bytes)
+  iendScan = AOBScan("00 49 45 4E 44 AE 42 60","")
+
+  --Check for nil results or uneven number of results with pngScan and iendScan
+  --If uneven, align them for an attempt to dump what can be dumped
+  if pngScan == nil or iendScan == nil then
+    print("There were no matching results found.")
+    if pngScan ~= nil then pngScan.destroy() end
+    if iendScan ~= nil then iendScan.destroy() end
+    return
+  elseif pngScan.Count ~= iendScan.Count then
+    print("Uneven results for filetype check.")
+    print("PNG magic total: " .. pngScan.Count)
+    print("IEND total: " .. iendScan.Count)
+    print("Saving what I can. Results may vary from expectations.")
+    print("Please hold while I write the files to disk...")
+
+    --Align counts
+    if pngScan.Count &gt; iendScan.Count then
+      pngScanCount = 1
+      wonky = pngScan.Count - iendScan.Count
+    else
+      wonky = iendScan.Count - pngScan.Count
+    end
+  else
+    print("PNGs found!")
+    print("Please hold while I write the files to disk...")
+  end
+
+  --Prepare count total for the upcoming for-loop
+  if wonky == nil then
+    count = pngScan.Count-1
+  elseif pngScanCount == 1 then
+    count = pngScan.Count-(1+wonky)
+  else
+    count = iendScan.Count-(1+wonky)
+  end
+
+  --Create directory to save PNGs to
+  local path = "C:\\PNGs"
+  os.execute("mkdir " .. path)
+
+  --Dump png images
+  for i=0, count, 1 do
+    local fileName = "C:/PNGs/" .. tostring(i) .. ".png"
+    local pngHexToInt = tonumber(pngScan[i],16)
+    local iendHexToInt = tonumber(iendScan[i],16)+8
+
+    --Check to see if IEND address is lower than PNG. If it is, then increase
+    --the IEND index by one. This keeps from a "out of memory" error, and
+    --continues trying to dump.
+    if iendHexToInt &lt; pngHexToInt then
+      iendHexToInt = tonumber(iendScan[i+1],16)+8
+    end
+
+    local numBytesToWrite = iendHexToInt - pngHexToInt
+
+    --Only write to file if there is a positive number of bytes
+    if numBytesToWrite &gt; 0 then
+      writeRegionToFile(fileName, pngScan[i], numBytesToWrite)
+    end
+  end
+
+  --Done!
+  print(" ")
+  print("PNG extraction complete! Hope you got what you wanted. =)")
+
+  --Open directory files were dumped to
+  shellExecute(path)
+
+  --Clean up AOB scan objects
+  pngScan.destroy()
+  iendScan.destroy()
+end
+
+pngScanFunc()
+</LuaScript>
+</CheatTable>
