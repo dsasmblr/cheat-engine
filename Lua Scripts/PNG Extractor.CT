@@ -2,7 +2,7 @@
 <CheatTable CheatEngineTableVersion="26">
   <CheatEntries/>
   <UserdefinedSymbols/>
-  <LuaScript>--##### PNG Dumper Lua Script for Cheat Engine
+  <LuaScript>--##### PNG Exporter Lua Script for Cheat Engine
 --##### Author: Stephen Chapman
 --##### Github: http://github.com/dsasmblr
 --##### Website: http://dsasmblr.com/blog
@@ -68,15 +68,16 @@ function pngScanFunc()
   for i=0, count, 1 do
     local fileName = "C:/PNGs/" .. tostring(i) .. ".png"
     local pngHexToInt = tonumber(pngScan[i],16)
-    local iendHexToInt = tonumber(iendScan[i],16)+8
+    local iendHexToInt = tonumber(iendScan[i],16)+8 --+8 to include CRC bytes
 
     --Check to see if IEND address is lower than PNG. If it is, then increase
-    --the IEND index by one. This keeps from a "out of memory" error, and
-    --continues trying to dump.
+    --the IEND index by one. This keeps from an "out of memory" error, and
+    --continues trying to dump
     if iendHexToInt &lt; pngHexToInt then
       iendHexToInt = tonumber(iendScan[i+1],16)+8
     end
 
+    --This gets exactly the number of bytes needed to write
     local numBytesToWrite = iendHexToInt - pngHexToInt
 
     --Only write to file if there is a positive number of bytes
