@@ -64,11 +64,11 @@ function pngScanFunc()
   local path = "C:\\PNGs"
   os.execute("mkdir " .. path)
 
-  --Dump png images
+  --Dump PNG images
   for i=0, count, 1 do
     local fileName = "C:/PNGs/" .. tostring(i) .. ".png"
     local pngHexToInt = tonumber(pngScan[i],16)
-    local iendHexToInt = tonumber(iendScan[i],16)+8 --+8 to include CRC bytes
+    local iendHexToInt = tonumber(iendScan[i],16)+8 --Includes ending CRC bytes
 
     --Check to see if IEND address is lower than PNG. If it is, then increase
     --the IEND index by one. This keeps from an "out of memory" error, and
