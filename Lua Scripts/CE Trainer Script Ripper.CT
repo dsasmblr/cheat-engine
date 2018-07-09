@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries/>
+  <UserdefinedSymbols/>
+  <LuaScript>--// Cheat Engine Trainer Script Ripper
+--// Author: Stephen Chapman
+--// Github: http://github.com/dsasmblr
+--// Website: http://dsasmblr.com/blog
+--// YouTube: http://youtube.com/seowhistleblower
+
+--// Define primary function
+function scriptScanFunc()
+
+  --// Variables to store AOB scan results
+  local beginAssemblerScript
+  local endAssemblerScript
+
+  --// Scan for &lt;AssemblerScript&gt;[ENABLE]
+  beginAssemblerScript = AOBScan("3C 41 73 73 65 6D 62 6C 65 72 53 63 72 69 70 74 3E 5B 45 4E 41 42 4C 45 5D","")
+
+  --// Scan for &lt;/AssemblerScript&gt;
+  endAssemblerScript = AOBScan("3C 2F 41 73 73 65 6D 62 6C 65 72 53 63 72 69 70 74 3E","")
+
+  --// Check for nil results or uneven number of results with beginAssemblerScript and endAssemblerScript
+  --// If empty or uneven scan results, clean up and return.
+  if beginAssemblerScript == nil or endAssemblerScript == nil then
+    print("There were no matching results found.")
+    if beginAssemblerScript ~= nil then beginAssemblerScript.destroy() end
+    if endAssemblerScript ~= nil then endAssemblerScript.destroy() end
+    return
+  elseif beginAssemblerScript.Count ~= endAssemblerScript.Count then
+    print("Uneven results for beginning and end of scripts.")
+    print("&lt;AssemblerScript&gt; total: " .. beginAssemblerScript.Count)
+    print("&lt;/AssemblerScript&gt; total: " .. endAssemblerScript.Count)
+    print("Sorry, my dude. You're going to have to go solo with this one!")
+    beginAssemblerScript.destroy()
+    endAssemblerScript.destroy()
+    return
+  end
+
+  --// Check if RippedScripts dir exists for game; if not, create directory
+  local path = "C:\\RippedScripts\\" .. process
+
+  if (os.execute("cd" .. path) ~= 0) then
+    os.execute("mkdir " .. path)
+  end
+
+  --// Prepare count total for the upcoming loop
+  --// Divide by 2 since two instances of each script exist in memory
+  local count = beginAssemblerScript.Count / 2
+
+  --// Loop to dump scripts:
+  for i=0, count - 1, 1 do
+
+    --// Set variable to write dir/file names
+    local fileName = path .. "/script" .. tostring(i + 1) .. ".txt"
+
+    --// Set variables to get addresses of begin/end AOB scan results with each repitition of the loop
+    --// Offset to remove &lt;AssemblerScript&gt;
+    local beginAssemblerScriptHexToInt = tonumber(beginAssemblerScript[i],16) + 17
+    --//No offset; address starts at beginning of result
+    local endAssemblerScriptHexToInt = tonumber(endAssemblerScript[i],16)
+
+    --// Set variable to get exactly the number of bytes needed to write
+    local numBytesToWrite = endAssemblerScriptHexToInt - beginAssemblerScriptHexToInt
+
+    --// Set variable to get start address of bytes to write
+    --// Offset by 17 bytes to set starting point at address past &lt;AssemblerScript&gt;
+    local startAddress = tonumber(beginAssemblerScript[i],16) + 17
+
+    --// Write script to file
+    writeRegionToFile(fileName, startAddress, numBytesToWrite)
+  end
+
+  --// Clean up AOB scan objects
+  beginAssemblerScript.destroy()
+  endAssemblerScript.destroy()
+
+  --// Print successfully finished messages
+  print("Scripts ripped!")
+  print("Hope you're not doing this to steal the work of others...")
+
+  --// Open directory files were dumped to
+  shellExecute(path)
+end
+
+--// Run function to begin script ripping process
+scriptScanFunc()
+</LuaScript>
+</CheatTable>
