@@ -58,7 +58,8 @@ function scriptScanFunc()
     --// Set variables to get addresses of begin/end AOB scan results with each repitition of the loop
     --// Offset to remove &lt;AssemblerScript&gt;
     local beginAssemblerScriptHexToInt = tonumber(beginAssemblerScript[i],16) + 17
-    --//No offset; address starts at beginning of result
+    
+    --// No offset; address starts at beginning of result
     local endAssemblerScriptHexToInt = tonumber(endAssemblerScript[i],16)
 
     --// Set variable to get exactly the number of bytes needed to write
