@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="29">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"No Collision"</Description>
+      <LastState Activated="1"/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+assert("game.exe"+257601,FF 90 58 03 00 00)
+
+"game.exe"+257601:
+  db 90 90 90 90 90 90
+
+[DISABLE]
+"game.exe"+257601:
+  db FF 90 58 03 00 00
+
+{
+// ORIGINAL CODE - INJECTION POINT: "game.exe"+257601
+
+"game.exe"+2575CF: 76 2A                          -  jna game.exe+2575FB
+"game.exe"+2575D1: C7 83 58 36 00 00 00 00 A0 41  -  mov [rbx+00003658],41A00000
+"game.exe"+2575DB: EB 1E                          -  jmp game.exe+2575FB
+"game.exe"+2575DD: 0F 2F B3 58 36 00 00           -  comiss xmm6,[rbx+00003658]
+"game.exe"+2575E4: 73 15                          -  jae game.exe+2575FB
+"game.exe"+2575E6: F3 0F 10 83 58 36 00 00        -  movss xmm0,[rbx+00003658]
+"game.exe"+2575EE: F3 0F 5C 43 28                 -  subss xmm0,[rbx+28]
+"game.exe"+2575F3: F3 0F 11 83 58 36 00 00        -  movss [rbx+00003658],xmm0
+"game.exe"+2575FB: 48 8B 03                       -  mov rax,[rbx]
+"game.exe"+2575FE: 48 8B CB                       -  mov rcx,rbx
+// ---------- INJECTING HERE ----------
+"game.exe"+257601: FF 90 58 03 00 00              -  call qword ptr [rax+00000358]
+// ---------- DONE INJECTING  ----------
+"game.exe"+257607: 48 8B 05 12 04 93 00           -  mov rax,[game.exe+B87A20]
+"game.exe"+25760E: 0F 2F B0 C0 04 00 00           -  comiss xmm6,[rax+000004C0]
+"game.exe"+257615: 0F 28 74 24 20                 -  movaps xmm6,[rsp+20]
+"game.exe"+25761A: 72 11                          -  jb game.exe+25762D
+"game.exe"+25761C: 83 BB 08 37 00 00 00           -  cmp dword ptr [rbx+00003708],00
+"game.exe"+257623: 74 08                          -  je game.exe+25762D
+"game.exe"+257625: 48 8B CB                       -  mov rcx,rbx
+"game.exe"+257628: E8 A3 0C 00 00                 -  call game.exe+2582D0
+"game.exe"+25762D: 48 8B CB                       -  mov rcx,rbx
+"game.exe"+257630: E8 EB 0F 00 00                 -  call game.exe+258620
+}
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>3</ID>
+      <Description>"Infinite Jumps"</Description>
+      <LastState Activated="1"/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+assert("game.exe"+25D743,74 44 84 D2 75 22)
+
+"game.exe"+25D743:
+  db 90 90
+
+[DISABLE]
+"game.exe"+25D743:
+  db 74 44
+
+{
+// ORIGINAL CODE - INJECTION POINT: "game.exe"+25D743
+
+"game.exe"+25D71F: 48 8B 81 40 2F 00 00              -  mov rax,[rcx+00002F40]
+"game.exe"+25D726: 0F B6 FA                          -  movzx edi,dl
+"game.exe"+25D729: 48 C1 E8 36                       -  shr rax,36
+"game.exe"+25D72D: 48 8B D9                          -  mov rbx,rcx
+"game.exe"+25D730: 49 63 F0                          -  movsxd  rsi,r8d
+"game.exe"+25D733: A8 01                             -  test al,01
+"game.exe"+25D735: 75 79                             -  jne game.exe+25D7B0
+"game.exe"+25D737: 8B 81 28 2F 00 00                 -  mov eax,[rcx+00002F28]
+"game.exe"+25D73D: 48 C1 E8 0B                       -  shr rax,0B
+"game.exe"+25D741: A8 01                             -  test al,01
+// ---------- INJECTING HERE ----------
+"game.exe"+25D743: 74 44                             -  je game.exe+25D789
+"game.exe"+25D745: 84 D2                             -  test dl,dl
+"game.exe"+25D747: 75 22                             -  jne game.exe+25D76B
+// ---------- DONE INJECTING  ----------
+"game.exe"+25D749: 48 8D 0C 76                       -  lea rcx,[rsi+rsi*2]
+"game.exe"+25D74D: 48 C1 E1 07                       -  shl rcx,07
+"game.exe"+25D751: 8B 94 19 A0 06 00 00              -  mov edx,[rcx+rbx+000006A0]
+"game.exe"+25D758: 8B C2                             -  mov eax,edx
+"game.exe"+25D75A: C1 EA 0C                          -  shr edx,0C
+"game.exe"+25D75D: 80 E2 01                          -  and dl,01
+"game.exe"+25D760: C1 E8 0A                          -  shr eax,0A
+"game.exe"+25D763: 24 01                             -  and al,01
+"game.exe"+25D765: 75 04                             -  jne game.exe+25D76B
+"game.exe"+25D767: 84 D2                             -  test dl,dl
+}
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <CheatCodes>
+    <CodeEntry>
+      <Description>Change of call qword ptr [rax+00000178]</Description>
+      <AddressString>game.exe+112680</AddressString>
+      <Before>
+        <Byte>8B</Byte>
+        <Byte>03</Byte>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>CB</Byte>
+      </Before>
+      <Actual>
+        <Byte>FF</Byte>
+        <Byte>90</Byte>
+        <Byte>78</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>43</Byte>
+        <Byte>10</Byte>
+        <Byte>83</Byte>
+        <Byte>E0</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of call qword ptr [rax+00000358]</Description>
+      <AddressString>game.exe+257601</AddressString>
+      <Before>
+        <Byte>8B</Byte>
+        <Byte>03</Byte>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>CB</Byte>
+      </Before>
+      <Actual>
+        <Byte>FF</Byte>
+        <Byte>90</Byte>
+        <Byte>58</Byte>
+        <Byte>03</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>05</Byte>
+        <Byte>12</Byte>
+        <Byte>04</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of jne game.exe+25D710</Description>
+      <AddressString>game.exe+25D9FD</AddressString>
+      <Before>
+        <Byte>8C</Byte>
+        <Byte>18</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>0F</Byte>
+        <Byte>85</Byte>
+        <Byte>0D</Byte>
+        <Byte>FD</Byte>
+        <Byte>FF</Byte>
+        <Byte>FF</Byte>
+      </Actual>
+      <After>
+        <Byte>E9</Byte>
+        <Byte>C8</Byte>
+        <Byte>FD</Byte>
+        <Byte>FF</Byte>
+        <Byte>FF</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of jne game.exe+25D7B0</Description>
+      <AddressString>game.exe+25D735</AddressString>
+      <Before>
+        <Byte>49</Byte>
+        <Byte>63</Byte>
+        <Byte>F0</Byte>
+        <Byte>A8</Byte>
+        <Byte>01</Byte>
+      </Before>
+      <Actual>
+        <Byte>75</Byte>
+        <Byte>79</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>81</Byte>
+        <Byte>28</Byte>
+        <Byte>2F</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je game.exe+25D789</Description>
+      <AddressString>game.exe+25D743</AddressString>
+      <Before>
+        <Byte>C1</Byte>
+        <Byte>E8</Byte>
+        <Byte>0B</Byte>
+        <Byte>A8</Byte>
+        <Byte>01</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>44</Byte>
+      </Actual>
+      <After>
+        <Byte>84</Byte>
+        <Byte>D2</Byte>
+        <Byte>75</Byte>
+        <Byte>22</Byte>
+        <Byte>48</Byte>
+      </After>
+    </CodeEntry>
+  </CheatCodes>
+  <UserdefinedSymbols/>
+</CheatTable>
