@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="29">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>3</ID>
+      <Description>"Infinite Health"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+aobscanmodule(infHealth,Borderlands3.exe,F3 0F 11 91 A0 00 00 00)
+alloc(newmem,$1000,"Borderlands3.exe"+2A504BA)
+
+label(code)
+label(return)
+
+newmem:
+  pushf
+  cmp r11d,8CDFE8
+  je cheat
+  cmp r11d,8CDF78
+  je cheat
+  cmp r11d,8CE1A8
+  jne code
+
+cheat:
+  popf
+  movss [rcx+000000A0],xmm3
+  jmp return
+
+code:
+  popf
+  movss [rcx+000000A0],xmm2
+  jmp return
+
+infHealth:
+  jmp newmem
+  nop 3
+return:
+registersymbol(infHealth)
+
+[DISABLE]
+
+infHealth:
+  db F3 0F 11 91 A0 00 00 00
+
+unregistersymbol(infHealth)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "Borderlands3.exe"+2A504BA
+
+"Borderlands3.exe"+2A5049A: 80 7A 48 00              -  cmp byte ptr [rdx+48],00
+"Borderlands3.exe"+2A5049E: 74 0E                    -  je Borderlands3.exe+2A504AE
+"Borderlands3.exe"+2A504A0: 0F 28 C3                 -  movaps xmm0,xmm3
+"Borderlands3.exe"+2A504A3: F3 0F 2C C0              -  cvttss2si eax,xmm0
+"Borderlands3.exe"+2A504A7: 66 0F 6E D8              -  movd xmm3,eax
+"Borderlands3.exe"+2A504AB: 0F 5B DB                 -  cvtdq2ps xmm3,xmm3
+"Borderlands3.exe"+2A504AE: 0F 2F E2                 -  comiss xmm4,xmm2
+"Borderlands3.exe"+2A504B1: 72 07                    -  jb Borderlands3.exe+2A504BA
+"Borderlands3.exe"+2A504B3: 0F 28 D3                 -  movaps xmm2,xmm3
+"Borderlands3.exe"+2A504B6: F3 0F 5D D4              -  minss xmm2,xmm4
+// ---------- INJECTING HERE ----------
+"Borderlands3.exe"+2A504BA: F3 0F 11 91 A0 00 00 00  -  movss [rcx+000000A0],xmm2
+// ---------- DONE INJECTING  ----------
+"Borderlands3.exe"+2A504C2: 45 84 C0                 -  test r8l,r8l
+"Borderlands3.exe"+2A504C5: 0F 85 45 DA FF FF        -  jne Borderlands3.exe+2A4DF10
+"Borderlands3.exe"+2A504CB: 0F 2E A9 E0 00 00 00     -  ucomiss xmm5,[rcx+000000E0]
+"Borderlands3.exe"+2A504D2: 75 08                    -  jne Borderlands3.exe+2A504DC
+"Borderlands3.exe"+2A504D4: F3 0F 11 91 E0 00 00 00  -  movss [rcx+000000E0],xmm2
+"Borderlands3.exe"+2A504DC: C3                       -  ret 
+"Borderlands3.exe"+2A504DD: CC                       -  int 3 
+"Borderlands3.exe"+2A504DE: CC                       -  int 3 
+"Borderlands3.exe"+2A504DF: CC                       -  int 3 
+"Borderlands3.exe"+2A504E0: E9 FB 7D FE 1E           -  jmp Borderlands3.exe+21A382E0
+}
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
