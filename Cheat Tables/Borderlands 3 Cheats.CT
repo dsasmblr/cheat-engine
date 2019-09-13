@@ -20,6 +20,10 @@ newmem:
   cmp r11d,8CDF78
   je cheat
   cmp r11d,8CE1A8
+  je cheat
+  cmp r11d,8CE7F8
+  je cheat
+  cmp r11d,8CE098
   jne code
 
 cheat:
@@ -72,6 +76,54 @@ dealloc(newmem)
 "Borderlands3.exe"+2A504DE: CC                       -  int 3 
 "Borderlands3.exe"+2A504DF: CC                       -  int 3 
 "Borderlands3.exe"+2A504E0: E9 FB 7D FE 1E           -  jmp Borderlands3.exe+21A382E0
+}
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>4</ID>
+      <Description>"Infinite Ammo"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+aobscanmodule(infAmmo,Borderlands3.exe,40 53 48 83 EC 20 48 8B 01 48 8B D9 48 89)
+registersymbol(infAmmo)
+
+infAmmo:
+  db c3 90
+
+[DISABLE]
+infAmmo:
+  db 40 53
+
+unregistersymbol(infAmmo)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "Borderlands3.exe"+2D669E0
+
+"Borderlands3.exe"+2D669D6: CC                    -  int 3 
+"Borderlands3.exe"+2D669D7: CC                    -  int 3 
+"Borderlands3.exe"+2D669D8: CC                    -  int 3 
+"Borderlands3.exe"+2D669D9: CC                    -  int 3 
+"Borderlands3.exe"+2D669DA: CC                    -  int 3 
+"Borderlands3.exe"+2D669DB: CC                    -  int 3 
+"Borderlands3.exe"+2D669DC: CC                    -  int 3 
+"Borderlands3.exe"+2D669DD: CC                    -  int 3 
+"Borderlands3.exe"+2D669DE: CC                    -  int 3 
+"Borderlands3.exe"+2D669DF: CC                    -  int 3 
+// ---------- INJECTING HERE ----------
+"Borderlands3.exe"+2D669E0: 40 53                 -  push rbx
+"Borderlands3.exe"+2D669E2: 48 83 EC 20           -  sub rsp,20
+// ---------- DONE INJECTING  ----------
+"Borderlands3.exe"+2D669E6: 48 8B 01              -  mov rax,[rcx]
+"Borderlands3.exe"+2D669E9: 48 8B D9              -  mov rbx,rcx
+"Borderlands3.exe"+2D669EC: 48 89 6C 24 30        -  mov [rsp+30],rbp
+"Borderlands3.exe"+2D669F1: 33 ED                 -  xor ebp,ebp
+"Borderlands3.exe"+2D669F3: 48 89 74 24 38        -  mov [rsp+38],rsi
+"Borderlands3.exe"+2D669F8: 8B F2                 -  mov esi,edx
+"Borderlands3.exe"+2D669FA: 85 D2                 -  test edx,edx
+"Borderlands3.exe"+2D669FC: 78 49                 -  js Borderlands3.exe+2D66A47
+"Borderlands3.exe"+2D669FE: 48 89 7C 24 40        -  mov [rsp+40],rdi
+"Borderlands3.exe"+2D66A03: FF 90 48 04 00 00     -  call qword ptr [rax+00000448]
 }
 </AssemblerScript>
     </CheatEntry>
