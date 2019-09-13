@@ -11,3 +11,4 @@ This is my personal repository of all things Cheat Engine! Eventually, it'll fil
 ## Cheat Tables (CTs):
 
 1. **Mega Man 11 - No Collision and Infinite Jump**: This CT contains the cheats I created via Cheat Engine in [this Mega Man 11 video tutorial](https://youtu.be/rqD45b0oCJc).
+2. **Borderlands 3 Cheats**: This CT contains various cheats I've created for BL3 tutorial videos, as well as just for fun!
