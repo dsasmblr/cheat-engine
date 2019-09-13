@@ -127,6 +127,69 @@ unregistersymbol(infAmmo)
 }
 </AssemblerScript>
     </CheatEntry>
+    <CheatEntry>
+      <ID>6</ID>
+      <Description>"1.4 BILLION Golden Keys!"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+aobscanmodule(INJECT,Borderlands3.exe,74 F8 8B 40 08) // should be unique
+alloc(newmem,$1000,"Borderlands3.exe"+8D42A1C)
+
+label(code)
+label(return)
+
+newmem:
+
+code:
+  je Borderlands3.exe+8D42A16
+  mov [rax+08],#1410065407
+  mov eax,[rax+08]
+  jmp return
+
+INJECT:
+  jmp newmem
+return:
+registersymbol(INJECT)
+
+[DISABLE]
+
+INJECT:
+  db 74 F8 8B 40 08
+
+unregistersymbol(INJECT)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "Borderlands3.exe"+8D42A1C
+
+"Borderlands3.exe"+8D42A03: 4C 39 C0                    -  cmp rax,r8
+"Borderlands3.exe"+8D42A06: 74 0E                       -  je Borderlands3.exe+8D42A16
+"Borderlands3.exe"+8D42A08: 48 39 10                    -  cmp [rax],rdx
+"Borderlands3.exe"+8D42A0B: 74 0C                       -  je Borderlands3.exe+8D42A19
+"Borderlands3.exe"+8D42A0D: 48 83 C0 10                 -  add rax,10
+"Borderlands3.exe"+8D42A11: 4C 39 C0                    -  cmp rax,r8
+"Borderlands3.exe"+8D42A14: 75 F2                       -  jne Borderlands3.exe+8D42A08
+"Borderlands3.exe"+8D42A16: 31 C0                       -  xor eax,eax
+"Borderlands3.exe"+8D42A18: C3                          -  ret 
+"Borderlands3.exe"+8D42A19: 48 85 C0                    -  test rax,rax
+// ---------- INJECTING HERE ----------
+"Borderlands3.exe"+8D42A1C: 74 F8                       -  je Borderlands3.exe+8D42A16
+"Borderlands3.exe"+8D42A1E: 8B 40 08                    -  mov eax,[rax+08]
+// ---------- DONE INJECTING  ----------
+"Borderlands3.exe"+8D42A21: C3                          -  ret 
+"Borderlands3.exe"+8D42A22: 9D                          -  popfq 
+"Borderlands3.exe"+8D42A23: 41 55                       -  push r13
+"Borderlands3.exe"+8D42A25: 4C 8D 2D E4 61 71 17        -  lea r13,[Borderlands3.exe+20458C10]
+"Borderlands3.exe"+8D42A2C: 4C 87 2C 24                 -  xchg [rsp],r13
+"Borderlands3.exe"+8D42A30: C3                          -  ret 
+"Borderlands3.exe"+8D42A31: 48 D1 D8                    -  rcr rax,1
+"Borderlands3.exe"+8D42A34: 48 03 04 24                 -  add rax,[rsp]
+"Borderlands3.exe"+8D42A38: 4C 89 1C 24                 -  mov [rsp],r11
+"Borderlands3.exe"+8D42A3C: 48 F7 D0                    -  not rax
+}
+</AssemblerScript>
+    </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>
 </CheatTable>
