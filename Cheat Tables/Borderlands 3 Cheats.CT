@@ -190,6 +190,88 @@ dealloc(newmem)
 }
 </AssemblerScript>
     </CheatEntry>
+    <CheatEntry>
+      <ID>7</ID>
+      <Description>"Max Backpack Slots"</Description>
+      <Options moHideChildren="1"/>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+assert("Borderlands3.exe"+22793940,8B 81 A8 02 00 00)
+define(infBackpack,"Borderlands3.exe"+22793940)
+registersymbol(infBackpack)
+
+alloc(infBackpackMem,$1000,"Borderlands3.exe"+22793940)
+registersymbol(infBackpackMem)
+
+define(pBackpack,infBackpackMem+100)
+registersymbol(pBackpack)
+
+label(code)
+label(return)
+
+pBackpack:
+  dq 0
+
+infBackpackMem:
+  mov [pBackpack],rcx
+
+code:
+  mov eax,[rcx+000002A8]
+  jmp return
+
+infBackpack:
+  jmp infBackpackMem
+  nop
+
+return:
+
+[DISABLE]
+"Borderlands3.exe"+22793940:
+  db 8B 81 A8 02 00 00
+
+unregistersymbol(pBackpack)
+unregistersymbol(pBackpackMem)
+unregistersymbol(infBackpack)
+dealloc(infBackpackMem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "Borderlands3.exe"+22793940
+
+"Borderlands3.exe"+22793918: 48 21 F2                       -  and rdx,rsi
+"Borderlands3.exe"+2279391B: 50                             -  push rax
+"Borderlands3.exe"+2279391C: 48 C1 C2 05                    -  rol rdx,05
+"Borderlands3.exe"+22793920: 48 0F AC FF 28                 -  shrd rdi,rdi,28
+"Borderlands3.exe"+22793925: 48 C7 C6 FF FF FF 00           -  mov rsi,00FFFFFF
+"Borderlands3.exe"+2279392C: 48 8D 15 DD D0 E4 ED           -  lea rdx,[Borderlands3.exe+105E0A10]
+"Borderlands3.exe"+22793933: 48 89 D0                       -  mov rax,rdx
+"Borderlands3.exe"+22793936: 48 87 04 24                    -  xchg [rsp],rax
+"Borderlands3.exe"+2279393A: C3                             -  ret
+"Borderlands3.exe"+2279393B: 67 0F 1F 40 00                 -  nop [rax+00]
+// ---------- INJECTING HERE ----------
+"Borderlands3.exe"+22793940: 8B 81 A8 02 00 00              -  mov eax,[rcx+000002A8]
+// ---------- DONE INJECTING  ----------
+"Borderlands3.exe"+22793946: C3                             -  ret
+"Borderlands3.exe"+22793947: 48 8D 2D 51 71 AF 00           -  lea rbp,[Borderlands3.exe+2328AA9F]
+"Borderlands3.exe"+2279394E: 11 CB                          -  adc ebx,ecx
+"Borderlands3.exe"+22793950: 48 8D 64 24 F8                 -  lea rsp,[rsp-08]
+"Borderlands3.exe"+22793955: 48 89 1C 24                    -  mov [rsp],rbx
+"Borderlands3.exe"+22793959: 48 8B 1D 83 1A 6B F4           -  mov rbx,[Borderlands3.exe+16E453E3]
+"Borderlands3.exe"+22793960: 48 0F 44 1D 83 1A 6B F4        -  cmove rbx,[Borderlands3.exe+16E453EB]
+"Borderlands3.exe"+22793968: 48 87 1C 24                    -  xchg [rsp],rbx
+"Borderlands3.exe"+2279396C: C3                             -  ret
+"Borderlands3.exe"+2279396D: C7                             -  db -39
+}
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>8</ID>
+          <Description>"Backpack Slots"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>[pBackpack]+2A8</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>
 </CheatTable>
