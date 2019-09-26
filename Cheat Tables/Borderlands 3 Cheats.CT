@@ -8,7 +8,7 @@
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>[ENABLE]
 aobscanmodule(infHealth,Borderlands3.exe,F3 0F 11 91 A0 00 00 00)
-alloc(newmem,$1000,"Borderlands3.exe"+2A504BA)
+alloc(newmem,$1000,"Borderlands3.exe"+2A7A1DA)
 
 label(code)
 label(return)
@@ -85,14 +85,14 @@ dealloc(newmem)
       <LastState/>
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>[ENABLE]
-aobscanmodule(infAmmo,Borderlands3.exe,40 53 48 83 EC 20 48 8B 01 48 8B D9 48 89)
+aobscanmodule(infAmmo,Borderlands3.exe,48 89 7C 24 40 FF 90 48 04 00 00)
 registersymbol(infAmmo)
 
-infAmmo:
+infAmmo-1E:
   db c3 90
 
 [DISABLE]
-infAmmo:
+infAmmo-1E:
   db 40 53
 
 unregistersymbol(infAmmo)
@@ -133,33 +133,61 @@ unregistersymbol(infAmmo)
       <LastState/>
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>[ENABLE]
-aobscanmodule(INJECT,Borderlands3.exe,74 F8 8B 40 08) // should be unique
-alloc(newmem,$1000,"Borderlands3.exe"+8D42A1C)
+aobscanmodule(billionGoldenKeys,Borderlands3.exe,74 F8 8B 40 08)
+alloc(billionGoldenKeysMem,$1000,"Borderlands3.exe"+965B42C)
 
-label(code)
 label(return)
 
-newmem:
-
-code:
-  je Borderlands3.exe+8D42A16
+billionGoldenKeysMem:
+  je Borderlands3.exe+965B426
   mov [rax+08],#1410065407
   mov eax,[rax+08]
   jmp return
 
-INJECT:
-  jmp newmem
+billionGoldenKeys:
+  jmp billionGoldenKeysMem
+
 return:
-registersymbol(INJECT)
+
+registersymbol(billionGoldenKeys)
 
 [DISABLE]
-
-INJECT:
+billionGoldenKeys:
   db 74 F8 8B 40 08
 
-unregistersymbol(INJECT)
-dealloc(newmem)
+unregistersymbol(billionGoldenKeys)
+dealloc(billionGoldenKeysMem)
 
+{
+// ORIGINAL CODE - INJECTION POINT: "Borderlands3.exe"+965B42C
+
+"Borderlands3.exe"+965B413: 4C 39 C0              -  cmp rax,r8
+"Borderlands3.exe"+965B416: 74 0E                 -  je Borderlands3.exe+965B426
+"Borderlands3.exe"+965B418: 48 39 10              -  cmp [rax],rdx
+"Borderlands3.exe"+965B41B: 74 0C                 -  je Borderlands3.exe+965B429
+"Borderlands3.exe"+965B41D: 48 83 C0 10           -  add rax,10
+"Borderlands3.exe"+965B421: 4C 39 C0              -  cmp rax,r8
+"Borderlands3.exe"+965B424: 75 F2                 -  jne Borderlands3.exe+965B418
+"Borderlands3.exe"+965B426: 31 C0                 -  xor eax,eax
+"Borderlands3.exe"+965B428: C3                    -  ret
+"Borderlands3.exe"+965B429: 48 85 C0              -  test rax,rax
+// ---------- INJECTING HERE ----------
+"Borderlands3.exe"+965B42C: 74 F8                 -  je Borderlands3.exe+965B426
+"Borderlands3.exe"+965B42E: 8B 40 08              -  mov eax,[rax+08]
+// ---------- DONE INJECTING  ----------
+"Borderlands3.exe"+965B431: C3                    -  ret
+"Borderlands3.exe"+965B432: 8A 81 D2 05 00 00     -  mov al,[rcx+000005D2]
+"Borderlands3.exe"+965B438: 44 8A 99 CB 03 00 00  -  mov r11l,[rcx+000003CB]
+"Borderlands3.exe"+965B43F: 40 8A B1 92 05 00 00  -  mov sil,[rcx+00000592]
+"Borderlands3.exe"+965B446: 40 88 F6              -  mov sil,sil
+"Borderlands3.exe"+965B449: 44 8A 89 BA 05 00 00  -  mov r9l,[rcx+000005BA]
+"Borderlands3.exe"+965B450: BA 00 00 00 00        -  mov edx,00000000
+"Borderlands3.exe"+965B455: 4C 8D 15 F2 93 A9 0E  -  lea r10,[Borderlands3.exe+180F484E]
+"Borderlands3.exe"+965B45C: 41 C1 C3 18           -  rol r11d,18
+"Borderlands3.exe"+965B460: C1 CE 08              -  ror esi,08
+}
+
+// OLD (PRE-UPDATE)
 {
 // ORIGINAL CODE - INJECTION POINT: "Borderlands3.exe"+8D42A1C
 
@@ -197,11 +225,11 @@ dealloc(newmem)
       <LastState/>
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>[ENABLE]
-assert("Borderlands3.exe"+8D42A1C,74 F8 8B 40 08)
-define(infGoldenChest,"Borderlands3.exe"+8D42A1C)
+assert("Borderlands3.exe"+965B42C,74 F8 8B 40 08)
+define(infGoldenChest,"Borderlands3.exe"+965B42C)
 registersymbol(infGoldenChest)
 
-alloc(infGoldenChestMem,$1000,"Borderlands3.exe"+8D42A1C)
+alloc(infGoldenChestMem,$1000,"Borderlands3.exe"+965B42C)
 registersymbol(infGoldenChestMem)
 
 define(pGoldenKeys,infGoldenChestMem+100)
@@ -209,7 +237,7 @@ registersymbol(pGoldenKeys)
 
 label(return)
 
-"Borderlands3.exe"+8D2F4AF:
+"Borderlands3.exe"+964893F: // Nop writes when using a golden key
   db 90 90 90
 
 pGoldenKeys:
@@ -217,7 +245,7 @@ pGoldenKeys:
 
 infGoldenChestMem:
   mov [pGoldenKeys],rax
-  je Borderlands3.exe+8D42A16
+  je Borderlands3.exe+965B426
   mov eax,1
   jmp return
 
@@ -227,10 +255,10 @@ infGoldenChest:
 return:
 
 [DISABLE]
-"Borderlands3.exe"+8D2F4AF:
+"Borderlands3.exe"+964893F:
   db 89 50 08
 
-"Borderlands3.exe"+8D42A1C:
+"Borderlands3.exe"+965B42C:
   db 74 F8 8B 40 08
 
 unregistersymbol(pGoldenKeys)
@@ -238,6 +266,36 @@ unregistersymbol(infGoldenChestMem)
 unregistersymbol(infGoldenChest)
 dealloc(infGoldenChestMem)
 
+{
+// ORIGINAL CODE - INJECTION POINT: "Borderlands3.exe"+965B42C
+
+"Borderlands3.exe"+965B413: 4C 39 C0              -  cmp rax,r8
+"Borderlands3.exe"+965B416: 74 0E                 -  je Borderlands3.exe+965B426
+"Borderlands3.exe"+965B418: 48 39 10              -  cmp [rax],rdx
+"Borderlands3.exe"+965B41B: 74 0C                 -  je Borderlands3.exe+965B429
+"Borderlands3.exe"+965B41D: 48 83 C0 10           -  add rax,10
+"Borderlands3.exe"+965B421: 4C 39 C0              -  cmp rax,r8
+"Borderlands3.exe"+965B424: 75 F2                 -  jne Borderlands3.exe+965B418
+"Borderlands3.exe"+965B426: 31 C0                 -  xor eax,eax
+"Borderlands3.exe"+965B428: C3                    -  ret
+"Borderlands3.exe"+965B429: 48 85 C0              -  test rax,rax
+// ---------- INJECTING HERE ----------
+"Borderlands3.exe"+965B42C: 74 F8                 -  je Borderlands3.exe+965B426
+"Borderlands3.exe"+965B42E: 8B 40 08              -  mov eax,[rax+08]
+// ---------- DONE INJECTING  ----------
+"Borderlands3.exe"+965B431: C3                    -  ret
+"Borderlands3.exe"+965B432: 8A 81 D2 05 00 00     -  mov al,[rcx+000005D2]
+"Borderlands3.exe"+965B438: 44 8A 99 CB 03 00 00  -  mov r11l,[rcx+000003CB]
+"Borderlands3.exe"+965B43F: 40 8A B1 92 05 00 00  -  mov sil,[rcx+00000592]
+"Borderlands3.exe"+965B446: 40 88 F6              -  mov sil,sil
+"Borderlands3.exe"+965B449: 44 8A 89 BA 05 00 00  -  mov r9l,[rcx+000005BA]
+"Borderlands3.exe"+965B450: BA 00 00 00 00        -  mov edx,00000000
+"Borderlands3.exe"+965B455: 4C 8D 15 F2 93 A9 0E  -  lea r10,[Borderlands3.exe+180F484E]
+"Borderlands3.exe"+965B45C: 41 C1 C3 18           -  rol r11d,18
+"Borderlands3.exe"+965B460: C1 CE 08              -  ror esi,08
+}
+
+// OLD (PRE-UPDATE)
 {
 // ORIGINAL CODE - INJECTION POINT: "Borderlands3.exe"+8D42A1C
 
@@ -271,91 +329,9 @@ dealloc(infGoldenChestMem)
         <CheatEntry>
           <ID>14</ID>
           <Description>"Golden Keys"</Description>
-          <LastState Value="998" RealAddress="5EC6F988"/>
+          <LastState Value="1410065407" RealAddress="5C9DB808"/>
           <VariableType>4 Bytes</VariableType>
           <Address>[pGoldenKeys]+08</Address>
-        </CheatEntry>
-      </CheatEntries>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>7</ID>
-      <Description>"Max Backpack Slots"</Description>
-      <Options moHideChildren="1"/>
-      <LastState/>
-      <VariableType>Auto Assembler Script</VariableType>
-      <AssemblerScript>[ENABLE]
-assert("Borderlands3.exe"+22793940,8B 81 A8 02 00 00)
-define(infBackpack,"Borderlands3.exe"+22793940)
-registersymbol(infBackpack)
-
-alloc(infBackpackMem,$1000,"Borderlands3.exe"+22793940)
-registersymbol(infBackpackMem)
-
-define(pBackpack,infBackpackMem+100)
-registersymbol(pBackpack)
-
-label(code)
-label(return)
-
-pBackpack:
-  dq 0
-
-infBackpackMem:
-  mov [pBackpack],rcx
-
-code:
-  mov eax,[rcx+000002A8]
-  jmp return
-
-infBackpack:
-  jmp infBackpackMem
-  nop
-
-return:
-
-[DISABLE]
-"Borderlands3.exe"+22793940:
-  db 8B 81 A8 02 00 00
-
-unregistersymbol(pBackpack)
-unregistersymbol(pBackpackMem)
-unregistersymbol(infBackpack)
-dealloc(infBackpackMem)
-
-{
-// ORIGINAL CODE - INJECTION POINT: "Borderlands3.exe"+22793940
-
-"Borderlands3.exe"+22793918: 48 21 F2                       -  and rdx,rsi
-"Borderlands3.exe"+2279391B: 50                             -  push rax
-"Borderlands3.exe"+2279391C: 48 C1 C2 05                    -  rol rdx,05
-"Borderlands3.exe"+22793920: 48 0F AC FF 28                 -  shrd rdi,rdi,28
-"Borderlands3.exe"+22793925: 48 C7 C6 FF FF FF 00           -  mov rsi,00FFFFFF
-"Borderlands3.exe"+2279392C: 48 8D 15 DD D0 E4 ED           -  lea rdx,[Borderlands3.exe+105E0A10]
-"Borderlands3.exe"+22793933: 48 89 D0                       -  mov rax,rdx
-"Borderlands3.exe"+22793936: 48 87 04 24                    -  xchg [rsp],rax
-"Borderlands3.exe"+2279393A: C3                             -  ret
-"Borderlands3.exe"+2279393B: 67 0F 1F 40 00                 -  nop [rax+00]
-// ---------- INJECTING HERE ----------
-"Borderlands3.exe"+22793940: 8B 81 A8 02 00 00              -  mov eax,[rcx+000002A8]
-// ---------- DONE INJECTING  ----------
-"Borderlands3.exe"+22793946: C3                             -  ret
-"Borderlands3.exe"+22793947: 48 8D 2D 51 71 AF 00           -  lea rbp,[Borderlands3.exe+2328AA9F]
-"Borderlands3.exe"+2279394E: 11 CB                          -  adc ebx,ecx
-"Borderlands3.exe"+22793950: 48 8D 64 24 F8                 -  lea rsp,[rsp-08]
-"Borderlands3.exe"+22793955: 48 89 1C 24                    -  mov [rsp],rbx
-"Borderlands3.exe"+22793959: 48 8B 1D 83 1A 6B F4           -  mov rbx,[Borderlands3.exe+16E453E3]
-"Borderlands3.exe"+22793960: 48 0F 44 1D 83 1A 6B F4        -  cmove rbx,[Borderlands3.exe+16E453EB]
-"Borderlands3.exe"+22793968: 48 87 1C 24                    -  xchg [rsp],rbx
-"Borderlands3.exe"+2279396C: C3                             -  ret
-"Borderlands3.exe"+2279396D: C7                             -  db -39
-}
-</AssemblerScript>
-      <CheatEntries>
-        <CheatEntry>
-          <ID>8</ID>
-          <Description>"Backpack Slots"</Description>
-          <VariableType>4 Bytes</VariableType>
-          <Address>[pBackpack]+2A8</Address>
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
