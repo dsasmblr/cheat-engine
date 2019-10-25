@@ -2,15 +2,100 @@
 <CheatTable CheatEngineTableVersion="29">
   <CheatEntries>
     <CheatEntry>
-      <ID>1</ID>
-      <Description>"Infinite Ammo"</Description>
-      <LastState/>
+      <ID>52</ID>
+      <Description>"&lt;-- ENABLE CT"</Description>
+      <Options moHideChildren="1"/>
+      <LastState Activated="1"/>
       <VariableType>Auto Assembler Script</VariableType>
-      <AssemblerScript>[ENABLE]
-aobscanmodule(infAmmo,IndianaEpicGameStore-Win64-Shipping.exe,2B C8 85 C9 0F 4E CF)
+      <AssemblerScript>{$lua}
+if syntaxcheck then return end
+
+[ENABLE]
+moduleBaseAddress = nil
+
+if getAddressSafe('IndianaWindowsStore-Win64-Shipping.exe') ~= nil then
+  moduleBaseAddress = getAddressSafe('IndianaWindowsStore-Win64-Shipping.exe')
+else
+  moduleBaseAddress = getAddressSafe('IndianaEpicGameStore-Win64-Shipping.exe')
+end
+
+registerSymbol('moduleBaseAddress',moduleBaseAddress,true)
+
+[DISABLE]
+unregisterSymbol('moduleBaseAddress')
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>3</ID>
+          <Description>"Infinite Max Ammo"</Description>
+          <LastState/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+aobscanmodule(infMaxAmmo,moduleBaseAddress,29 6E 08 0F 10 06)
+registersymbol(infMaxAmmo)
+
+alloc(infMaxAmmoMem,$1000,moduleBaseAddress+6B0E6A)
+
+label(return)
+
+infMaxAmmoMem:
+  //sub [rsi+08],ebp
+  movups xmm0,[rsi]
+  jmp return
+
+infMaxAmmo:
+  jmp infMaxAmmoMem
+  nop
+
+return:
+
+[DISABLE]
+infMaxAmmo:
+  db 29 6E 08 0F 10 06
+
+unregistersymbol(infMaxAmmo)
+dealloc(infMaxAmmoMem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "IndianaEpicGameStore-Win64-Shipping.exe"+6B0E6A
+
+"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E3C: C7 44 24 30 00 00 F0 FF  -  mov [rsp+30],FFF00000
+"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E44: 44 8B C7                 -  mov r8d,edi
+"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E47: 89 7C 24 28              -  mov [rsp+28],edi
+"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E4B: 48 8B D0                 -  mov rdx,rax
+"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E4E: 49 8B CF                 -  mov rcx,r15
+"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E51: 48 89 7C 24 20           -  mov [rsp+20],rdi
+"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E56: E8 95 2E 6A 00           -  call IndianaEpicGameStore-Win64-Shipping.exe+D53CF0
+"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E5B: 48 8B F8                 -  mov rdi,rax
+"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E5E: 48 89 7C 24 50           -  mov [rsp+50],rdi
+"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E63: 49 8D 8E 48 01 00 00     -  lea rcx,[r14+00000148]
+// ---------- INJECTING HERE ----------
+"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E6A: 29 6E 08                 -  sub [rsi+08],ebp
+"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E6D: 0F 10 06                 -  movups xmm0,[rsi]
+// ---------- DONE INJECTING  ----------
+"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E70: 0F 11 44 24 40           -  movups [rsp+40],xmm0
+"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E75: EB 65                    -  jmp IndianaEpicGameStore-Win64-Shipping.exe+6B0EDC
+"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E77: 75 6D                    -  jne IndianaEpicGameStore-Win64-Shipping.exe+6B0EE6
+"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E79: 41 8B 4F 08              -  mov ecx,[r15+08]
+"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E7D: 8B C1                    -  mov eax,ecx
+"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E7F: 2B C7                    -  sub eax,edi
+"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E81: 83 E8 01                 -  sub eax,01
+"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E84: 74 24                    -  je IndianaEpicGameStore-Win64-Shipping.exe+6B0EAA
+"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E86: 4D 8B 0F                 -  mov r9,[r15]
+"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E89: 4C 63 C0                 -  movsxd  r8,eax
+}
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>51</ID>
+          <Description>"Infinite Ammo"</Description>
+          <LastState/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+aobscanmodule(infAmmo,moduleBaseAddress,2B C8 85 C9 0F 4E CF)
 registersymbol(infAmmo)
 
-alloc(infAmmoMem,$1000,"IndianaEpicGameStore-Win64-Shipping.exe"+922D75)
+alloc(infAmmoMem,$1000,moduleBaseAddress+922D75)
 
 label(return)
 
@@ -63,78 +148,17 @@ dealloc(infAmmoMem)
 "IndianaEpicGameStore-Win64-Shipping.exe"+922D9A: CC                       -  int 3 
 }
 </AssemblerScript>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>3</ID>
-      <Description>"Infinite Max Ammo"</Description>
-      <LastState/>
-      <VariableType>Auto Assembler Script</VariableType>
-      <AssemblerScript>[ENABLE]
-aobscanmodule(infMaxAmmo,IndianaEpicGameStore-Win64-Shipping.exe,29 6E 08 0F 10 06)
-registersymbol(infMaxAmmo)
-
-alloc(infMaxAmmoMem,$1000,"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E6A)
-
-label(return)
-
-infMaxAmmoMem:
-  //sub [rsi+08],ebp
-  movups xmm0,[rsi]
-  jmp return
-
-infMaxAmmo:
-  jmp infMaxAmmoMem
-  nop
-
-return:
-
-[DISABLE]
-infMaxAmmo:
-  db 29 6E 08 0F 10 06
-
-unregistersymbol(infMaxAmmo)
-dealloc(infMaxAmmoMem)
-
-{
-// ORIGINAL CODE - INJECTION POINT: "IndianaEpicGameStore-Win64-Shipping.exe"+6B0E6A
-
-"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E3C: C7 44 24 30 00 00 F0 FF  -  mov [rsp+30],FFF00000
-"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E44: 44 8B C7                 -  mov r8d,edi
-"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E47: 89 7C 24 28              -  mov [rsp+28],edi
-"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E4B: 48 8B D0                 -  mov rdx,rax
-"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E4E: 49 8B CF                 -  mov rcx,r15
-"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E51: 48 89 7C 24 20           -  mov [rsp+20],rdi
-"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E56: E8 95 2E 6A 00           -  call IndianaEpicGameStore-Win64-Shipping.exe+D53CF0
-"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E5B: 48 8B F8                 -  mov rdi,rax
-"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E5E: 48 89 7C 24 50           -  mov [rsp+50],rdi
-"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E63: 49 8D 8E 48 01 00 00     -  lea rcx,[r14+00000148]
-// ---------- INJECTING HERE ----------
-"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E6A: 29 6E 08                 -  sub [rsi+08],ebp
-"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E6D: 0F 10 06                 -  movups xmm0,[rsi]
-// ---------- DONE INJECTING  ----------
-"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E70: 0F 11 44 24 40           -  movups [rsp+40],xmm0
-"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E75: EB 65                    -  jmp IndianaEpicGameStore-Win64-Shipping.exe+6B0EDC
-"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E77: 75 6D                    -  jne IndianaEpicGameStore-Win64-Shipping.exe+6B0EE6
-"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E79: 41 8B 4F 08              -  mov ecx,[r15+08]
-"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E7D: 8B C1                    -  mov eax,ecx
-"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E7F: 2B C7                    -  sub eax,edi
-"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E81: 83 E8 01                 -  sub eax,01
-"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E84: 74 24                    -  je IndianaEpicGameStore-Win64-Shipping.exe+6B0EAA
-"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E86: 4D 8B 0F                 -  mov r9,[r15]
-"IndianaEpicGameStore-Win64-Shipping.exe"+6B0E89: 4C 63 C0                 -  movsxd  r8,eax
-}
-</AssemblerScript>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>5</ID>
-      <Description>"Inf Health and OHK"</Description>
-      <LastState/>
-      <VariableType>Auto Assembler Script</VariableType>
-      <AssemblerScript>[ENABLE]
-aobscanmodule(infHealthOHK,IndianaEpicGameStore-Win64-Shipping.exe,F3 0F 11 91 C8 01 00 00)
+        </CheatEntry>
+        <CheatEntry>
+          <ID>5</ID>
+          <Description>"Inf Health and OHK"</Description>
+          <LastState/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+aobscanmodule(infHealthOHK,moduleBaseAddress,F3 0F 11 91 C8 01 00 00)
 registersymbol(infHealthOHK)
 
-alloc(newmem,$1000,"IndianaEpicGameStore-Win64-Shipping.exe"+6219B7)
+alloc(newmem,$1000,moduleBaseAddress+6219B7)
 
 label(cleanup)
 label(code)
@@ -199,18 +223,159 @@ dealloc(newmem)
 "IndianaEpicGameStore-Win64-Shipping.exe"+6219E9: 0F 28 CC                 -  movaps xmm1,xmm4
 }
 </AssemblerScript>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>7</ID>
-      <Description>"1.4 Billion Bits!"</Description>
-      <Options moHideChildren="1"/>
-      <LastState/>
-      <VariableType>Auto Assembler Script</VariableType>
-      <AssemblerScript>[ENABLE]
-aobscanmodule(infBits,IndianaEpicGameStore-Win64-Shipping.exe,0F 10 03 48 8B C5)
+        </CheatEntry>
+        <CheatEntry>
+          <ID>50</ID>
+          <Description>"Insta Level Up with Any XP Gain"</Description>
+          <LastState/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+aobscanmodule(instaLevelUp,moduleBaseAddress,2B 9F 78 07 00 00)
+registersymbol(instaLevelUp)
+
+alloc(newmem,$1000,moduleBaseAddress+6FC005)
+
+label(code)
+label(return)
+
+newmem:
+  mov ebx,[rdi+00000778]
+
+code:
+  sub ebx,[rdi+00000778]
+  jmp return
+
+instaLevelUp:
+  jmp newmem
+  nop
+
+return:
+
+[DISABLE]
+instaLevelUp:
+  db 2B 9F 78 07 00 00
+
+unregistersymbol(instaLevelUp)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "IndianaEpicGameStore-Win64-Shipping.exe"+6FC005
+
+"IndianaEpicGameStore-Win64-Shipping.exe"+6FBFDF: 4C 8B F6              -  mov r14,rsi
+"IndianaEpicGameStore-Win64-Shipping.exe"+6FBFE2: 49 C1 E6 02           -  shl r14,02
+"IndianaEpicGameStore-Win64-Shipping.exe"+6FBFE6: 4C 89 7C 24 30        -  mov [rsp+30],r15
+"IndianaEpicGameStore-Win64-Shipping.exe"+6FBFEB: 45 8B FC              -  mov r15d,r12d
+"IndianaEpicGameStore-Win64-Shipping.exe"+6FBFEE: 3B B7 70 04 00 00     -  cmp esi,[rdi+00000470]
+"IndianaEpicGameStore-Win64-Shipping.exe"+6FBFF4: 7D 0D                 -  jnl IndianaEpicGameStore-Win64-Shipping.exe+6FC003
+"IndianaEpicGameStore-Win64-Shipping.exe"+6FBFF6: 48 8B 87 68 04 00 00  -  mov rax,[rdi+00000468]
+"IndianaEpicGameStore-Win64-Shipping.exe"+6FBFFD: 41 8B 1C 06           -  mov ebx,[r14+rax]
+"IndianaEpicGameStore-Win64-Shipping.exe"+6FC001: EB 02                 -  jmp IndianaEpicGameStore-Win64-Shipping.exe+6FC005
+"IndianaEpicGameStore-Win64-Shipping.exe"+6FC003: 8B DD                 -  mov ebx,ebp
+// ---------- INJECTING HERE ----------
+"IndianaEpicGameStore-Win64-Shipping.exe"+6FC005: 2B 9F 78 07 00 00     -  sub ebx,[rdi+00000778]
+// ---------- DONE INJECTING  ----------
+"IndianaEpicGameStore-Win64-Shipping.exe"+6FC00B: 44 3B E3              -  cmp r12d,ebx
+"IndianaEpicGameStore-Win64-Shipping.exe"+6FC00E: 7C 32                 -  jl IndianaEpicGameStore-Win64-Shipping.exe+6FC042
+"IndianaEpicGameStore-Win64-Shipping.exe"+6FC010: E8 FB 73 FA FF        -  call IndianaEpicGameStore-Win64-Shipping.exe+6A3410
+"IndianaEpicGameStore-Win64-Shipping.exe"+6FC015: 3B B0 B0 01 00 00     -  cmp esi,[rax+000001B0]
+"IndianaEpicGameStore-Win64-Shipping.exe"+6FC01B: 7D 25                 -  jnl IndianaEpicGameStore-Win64-Shipping.exe+6FC042
+"IndianaEpicGameStore-Win64-Shipping.exe"+6FC01D: FF C6                 -  inc esi
+"IndianaEpicGameStore-Win64-Shipping.exe"+6FC01F: 49 83 C6 04           -  add r14,04
+"IndianaEpicGameStore-Win64-Shipping.exe"+6FC023: 44 2B FB              -  sub r15d,ebx
+"IndianaEpicGameStore-Win64-Shipping.exe"+6FC026: 3B B7 70 04 00 00     -  cmp esi,[rdi+00000470]
+"IndianaEpicGameStore-Win64-Shipping.exe"+6FC02C: 7D 0D                 -  jnl IndianaEpicGameStore-Win64-Shipping.exe+6FC03B
+}
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>10</ID>
+          <Description>"Get XP Pointer"</Description>
+          <Options moHideChildren="1"/>
+          <LastState/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+aobscanmodule(xpPointer,moduleBaseAddress,41 8B 9F 78 07 00 00)
+registersymbol(xpPointer)
+
+alloc(xpPointerMem,$1000,moduleBaseAddress+7B7A34)
+registersymbol(xpPointerMem)
+
+label(code)
+label(return)
+
+xpPointerMem+100:
+  dq 0
+
+xpPointerMem:
+  mov [xpPointerMem+100],r15
+
+code:
+  mov ebx,[r15+00000778]
+  jmp return
+
+xpPointer:
+  jmp xpPointerMem
+  nop 2
+
+return:
+
+[DISABLE]
+xpPointer:
+  db 41 8B 9F 78 07 00 00
+
+unregistersymbol(xpPointerMem)
+unregistersymbol(xpPointer)
+dealloc(xpPointerMem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "IndianaEpicGameStore-Win64-Shipping.exe"+7B7A34
+
+"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A17: 48 8B 03                    -  mov rax,[rbx]
+"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A1A: 48 8B CB                    -  mov rcx,rbx
+"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A1D: FF 10                       -  call qword ptr [rax]
+"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A1F: F0 0F C1 73 0C              - lock  xadd [rbx+0C],esi
+"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A24: 83 FE 01                    -  cmp esi,01
+"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A27: 75 0B                       -  jne IndianaEpicGameStore-Win64-Shipping.exe+7B7A34
+"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A29: 48 8B 03                    -  mov rax,[rbx]
+"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A2C: 8B D6                       -  mov edx,esi
+"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A2E: 48 8B CB                    -  mov rcx,rbx
+"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A31: FF 50 08                    -  call qword ptr [rax+08]
+// ---------- INJECTING HERE ----------
+"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A34: 41 8B 9F 78 07 00 00        -  mov ebx,[r15+00000778]
+// ---------- DONE INJECTING  ----------
+"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A3B: 49 8B CF                    -  mov rcx,r15
+"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A3E: E8 CD 06 F5 FF              -  call IndianaEpicGameStore-Win64-Shipping.exe+708110
+"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A43: 66 0F 6E D3                 -  movd xmm2,ebx
+"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A47: 48 8D 54 24 70              -  lea rdx,[rsp+70]
+"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A4C: 0F 5B D2                    -  cvtdq2ps xmm2,xmm2
+"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A4F: 48 8D 4D D8                 -  lea rcx,[rbp-28]
+"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A53: 66 0F 6E D8                 -  movd xmm3,eax
+"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A57: 0F 5B DB                    -  cvtdq2ps xmm3,xmm3
+"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A5A: E8 11 EB 06 00              -  call IndianaEpicGameStore-Win64-Shipping.exe+826570
+"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A5F: 48 8B 8F C0 02 00 00        -  mov rcx,[rdi+000002C0]
+}
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>11</ID>
+              <Description>"XP (Refresh Character Details Tab to Populate)"</Description>
+              <LastState Value="20" RealAddress="234C644D258"/>
+              <VariableType>4 Bytes</VariableType>
+              <Address>[xpPointerMem+100]+778</Address>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>7</ID>
+          <Description>"1.4 Billion Bits!"</Description>
+          <Options moHideChildren="1"/>
+          <LastState/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+aobscanmodule(infBits,moduleBaseAddress,0F 10 03 48 8B C5)
 registersymbol(infBits)
 
-alloc(pBitsMem,$1000,"IndianaEpicGameStore-Win64-Shipping.exe"+69AC9A)
+alloc(pBitsMem,$1000,moduleBaseAddress+69AC9A)
 registersymbol(pBitsMem)
 
 label(code)
@@ -271,94 +436,238 @@ dealloc(pBitsMem)
 "IndianaEpicGameStore-Win64-Shipping.exe"+69ACC1: 48 C1 E5 04              -  shl rbp,04
 }
 </AssemblerScript>
-      <CheatEntries>
-        <CheatEntry>
-          <ID>8</ID>
-          <Description>"Bits (Refresh Player Menu to Populate)"</Description>
-          <VariableType>4 Bytes</VariableType>
-          <Address>[pBitsMem+100]+8</Address>
-        </CheatEntry>
-      </CheatEntries>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>10</ID>
-      <Description>"Get XP Pointer"</Description>
-      <Options moHideChildren="1"/>
-      <LastState/>
-      <VariableType>Auto Assembler Script</VariableType>
-      <AssemblerScript>[ENABLE]
-aobscanmodule(xpPointer,IndianaEpicGameStore-Win64-Shipping.exe,41 8B 9F 78 07 00 00)
-registersymbol(xpPointer)
-
-alloc(xpPointerMem,$1000,"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A34)
-registersymbol(xpPointerMem)
-
-label(code)
-label(return)
-
-xpPointerMem+100:
-  dq 0
-
-xpPointerMem:
-  mov [xpPointerMem+100],r15
-
-code:
-  mov ebx,[r15+00000778]
-  jmp return
-
-xpPointer:
-  jmp xpPointerMem
-  nop 2
-
-return:
-
-[DISABLE]
-xpPointer:
-  db 41 8B 9F 78 07 00 00
-
-unregistersymbol(xpPointerMem)
-unregistersymbol(xpPointer)
-dealloc(xpPointerMem)
-
-{
-// ORIGINAL CODE - INJECTION POINT: "IndianaEpicGameStore-Win64-Shipping.exe"+7B7A34
-
-"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A17: 48 8B 03                    -  mov rax,[rbx]
-"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A1A: 48 8B CB                    -  mov rcx,rbx
-"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A1D: FF 10                       -  call qword ptr [rax]
-"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A1F: F0 0F C1 73 0C              - lock  xadd [rbx+0C],esi
-"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A24: 83 FE 01                    -  cmp esi,01
-"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A27: 75 0B                       -  jne IndianaEpicGameStore-Win64-Shipping.exe+7B7A34
-"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A29: 48 8B 03                    -  mov rax,[rbx]
-"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A2C: 8B D6                       -  mov edx,esi
-"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A2E: 48 8B CB                    -  mov rcx,rbx
-"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A31: FF 50 08                    -  call qword ptr [rax+08]
-// ---------- INJECTING HERE ----------
-"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A34: 41 8B 9F 78 07 00 00        -  mov ebx,[r15+00000778]
-// ---------- DONE INJECTING  ----------
-"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A3B: 49 8B CF                    -  mov rcx,r15
-"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A3E: E8 CD 06 F5 FF              -  call IndianaEpicGameStore-Win64-Shipping.exe+708110
-"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A43: 66 0F 6E D3                 -  movd xmm2,ebx
-"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A47: 48 8D 54 24 70              -  lea rdx,[rsp+70]
-"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A4C: 0F 5B D2                    -  cvtdq2ps xmm2,xmm2
-"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A4F: 48 8D 4D D8                 -  lea rcx,[rbp-28]
-"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A53: 66 0F 6E D8                 -  movd xmm3,eax
-"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A57: 0F 5B DB                    -  cvtdq2ps xmm3,xmm3
-"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A5A: E8 11 EB 06 00              -  call IndianaEpicGameStore-Win64-Shipping.exe+826570
-"IndianaEpicGameStore-Win64-Shipping.exe"+7B7A5F: 48 8B 8F C0 02 00 00        -  mov rcx,[rdi+000002C0]
-}
-</AssemblerScript>
-      <CheatEntries>
-        <CheatEntry>
-          <ID>11</ID>
-          <Description>"XP (Refresh Character Details Tab to Populate)"</Description>
-          <LastState Value="555" RealAddress="28BA3C8BD18"/>
-          <VariableType>4 Bytes</VariableType>
-          <Address>[xpPointerMem+100]+778</Address>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>8</ID>
+              <Description>"Bits (Refresh Player Menu to Populate)"</Description>
+              <VariableType>4 Bytes</VariableType>
+              <Address>[pBitsMem+100]+8</Address>
+            </CheatEntry>
+          </CheatEntries>
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
   </CheatEntries>
+  <CheatCodes>
+    <CodeEntry>
+      <Description>Change of inc [rdi+rax*4+7C]</Description>
+      <AddressString>IndianaEpicGameStore-Win64-Shipping.exe+85599B</AddressString>
+      <Before>
+        <Byte>20</Byte>
+        <Byte>4C</Byte>
+        <Byte>8D</Byte>
+        <Byte>3C</Byte>
+        <Byte>87</Byte>
+      </Before>
+      <Actual>
+        <Byte>FF</Byte>
+        <Byte>44</Byte>
+        <Byte>87</Byte>
+        <Byte>7C</Byte>
+      </Actual>
+      <After>
+        <Byte>E8</Byte>
+        <Byte>DC</Byte>
+        <Byte>15</Byte>
+        <Byte>E5</Byte>
+        <Byte>FF</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of call IndianaEpicGameStore-Win64-Shipping.exe+855950</Description>
+      <AddressString>IndianaEpicGameStore-Win64-Shipping.exe+855E3A</AddressString>
+      <Before>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>CB</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>11</Byte>
+        <Byte>FB</Byte>
+        <Byte>FF</Byte>
+        <Byte>FF</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>D3</Byte>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of inc [rdi+rax*4+60]</Description>
+      <AddressString>IndianaEpicGameStore-Win64-Shipping.exe+855989</AddressString>
+      <Before>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>0F</Byte>
+        <Byte>B6</Byte>
+        <Byte>C3</Byte>
+      </Before>
+      <Actual>
+        <Byte>FF</Byte>
+        <Byte>44</Byte>
+        <Byte>87</Byte>
+        <Byte>60</Byte>
+      </Actual>
+      <After>
+        <Byte>4C</Byte>
+        <Byte>89</Byte>
+        <Byte>74</Byte>
+        <Byte>24</Byte>
+        <Byte>50</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of inc [rbx+rax*4+7C]</Description>
+      <AddressString>IndianaEpicGameStore-Win64-Shipping.exe+855EBE</AddressString>
+      <Before>
+        <Byte>8B</Byte>
+        <Byte>D3</Byte>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>CB</Byte>
+      </Before>
+      <Actual>
+        <Byte>FF</Byte>
+        <Byte>44</Byte>
+        <Byte>83</Byte>
+        <Byte>7C</Byte>
+      </Actual>
+      <After>
+        <Byte>E8</Byte>
+        <Byte>69</Byte>
+        <Byte>58</Byte>
+        <Byte>C1</Byte>
+        <Byte>FF</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of jl IndianaEpicGameStore-Win64-Shipping.exe+6FC042</Description>
+      <AddressString>IndianaEpicGameStore-Win64-Shipping.exe+6FC00E</AddressString>
+      <Before>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>44</Byte>
+        <Byte>3B</Byte>
+        <Byte>E3</Byte>
+      </Before>
+      <Actual>
+        <Byte>7C</Byte>
+        <Byte>32</Byte>
+      </Actual>
+      <After>
+        <Byte>E8</Byte>
+        <Byte>FB</Byte>
+        <Byte>73</Byte>
+        <Byte>FA</Byte>
+        <Byte>FF</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of jnl IndianaEpicGameStore-Win64-Shipping.exe+6FC042</Description>
+      <AddressString>IndianaEpicGameStore-Win64-Shipping.exe+6FC01B</AddressString>
+      <Before>
+        <Byte>B0</Byte>
+        <Byte>B0</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>7D</Byte>
+        <Byte>25</Byte>
+      </Actual>
+      <After>
+        <Byte>FF</Byte>
+        <Byte>C6</Byte>
+        <Byte>49</Byte>
+        <Byte>83</Byte>
+        <Byte>C6</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of cmp esi,[rax+000001B0]</Description>
+      <AddressString>IndianaEpicGameStore-Win64-Shipping.exe+6FC015</AddressString>
+      <Before>
+        <Byte>E8</Byte>
+        <Byte>FB</Byte>
+        <Byte>73</Byte>
+        <Byte>FA</Byte>
+        <Byte>FF</Byte>
+      </Before>
+      <Actual>
+        <Byte>3B</Byte>
+        <Byte>B0</Byte>
+        <Byte>B0</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>90</Byte>
+        <Byte>90</Byte>
+        <Byte>FF</Byte>
+        <Byte>C6</Byte>
+        <Byte>49</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of call IndianaEpicGameStore-Win64-Shipping.exe+6A3410</Description>
+      <AddressString>IndianaEpicGameStore-Win64-Shipping.exe+6FC010</AddressString>
+      <Before>
+        <Byte>44</Byte>
+        <Byte>3B</Byte>
+        <Byte>E3</Byte>
+        <Byte>90</Byte>
+        <Byte>90</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>FB</Byte>
+        <Byte>73</Byte>
+        <Byte>FA</Byte>
+        <Byte>FF</Byte>
+      </Actual>
+      <After>
+        <Byte>90</Byte>
+        <Byte>90</Byte>
+        <Byte>90</Byte>
+        <Byte>90</Byte>
+        <Byte>90</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of mov [rdi+00000778],ebp</Description>
+      <AddressString>IndianaEpicGameStore-Win64-Shipping.exe+6FC0A7</AddressString>
+      <Before>
+        <Byte>3B</Byte>
+        <Byte>CD</Byte>
+        <Byte>0F</Byte>
+        <Byte>4E</Byte>
+        <Byte>E9</Byte>
+      </Before>
+      <Actual>
+        <Byte>89</Byte>
+        <Byte>AF</Byte>
+        <Byte>78</Byte>
+        <Byte>07</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>8D</Byte>
+        <Byte>B7</Byte>
+        <Byte>D8</Byte>
+        <Byte>03</Byte>
+      </After>
+    </CodeEntry>
+  </CheatCodes>
   <UserdefinedSymbols/>
   <Structures StructVersion="2">
     <Structure Name="unnamed structure" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
