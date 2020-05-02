@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="31">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>18</ID>
+      <Description>"Disable Camera Writes"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>// Disable writes to camera structure
+// Values are still read, though, so custom values will easily work
+
+[ENABLE]
+assert("SOR4.exe"+3B1DF0,57 56 48 81 EC 58 03 00 00)
+"SOR4.exe"+3B1DF0:
+  db C3
+
+[DISABLE]
+"SOR4.exe"+3B1DF0:
+  db 57
+
+{
+// ORIGINAL CODE - INJECTION POINT: "SOR4.exe"+3B1780
+
+"SOR4.exe"+3B1764: E8 57 B4 C6 FF              -  call SOR4.exe+1CBC0
+"SOR4.exe"+3B1769: 48 8B F0                    -  mov rsi,rax
+"SOR4.exe"+3B176C: 48 8B CE                    -  mov rcx,rsi
+"SOR4.exe"+3B176F: E8 EC 0E 17 00              -  call SOR4.exe+522660
+"SOR4.exe"+3B1774: 48 8B CE                    -  mov rcx,rsi
+"SOR4.exe"+3B1777: E8 34 BB C6 FF              -  call SOR4.exe+1D2B0
+"SOR4.exe"+3B177C: CC                          -  int 3 
+"SOR4.exe"+3B177D: 90                          -  nop 
+"SOR4.exe"+3B177E: 90                          -  nop 
+"SOR4.exe"+3B177F: 90                          -  nop 
+// ---------- INJECTING HERE ----------
+"SOR4.exe"+3B1780: 57                          -  push rdi
+"SOR4.exe"+3B1781: 56                          -  push rsi
+"SOR4.exe"+3B1782: 48 81 EC 58 03 00 00        -  sub rsp,00000358
+// ---------- DONE INJECTING  ----------
+"SOR4.exe"+3B1789: 0F 29 B4 24 40 03 00 00     -  movaps [rsp+00000340],xmm6
+"SOR4.exe"+3B1791: 0F 29 BC 24 30 03 00 00     -  movaps [rsp+00000330],xmm7
+"SOR4.exe"+3B1799: 48 8B F1                    -  mov rsi,rcx
+"SOR4.exe"+3B179C: 48 8D BC 24 08 01 00 00     -  lea rdi,[rsp+00000108]
+"SOR4.exe"+3B17A4: B9 8A 00 00 00              -  mov ecx,0000008A
+"SOR4.exe"+3B17A9: 33 C0                       -  xor eax,eax
+"SOR4.exe"+3B17AB: F3 AB                       - repe  stosd 
+"SOR4.exe"+3B17AD: 48 8B CE                    -  mov rcx,rsi
+"SOR4.exe"+3B17B0: 4C 89 84 24 80 03 00 00     -  mov [rsp+00000380],r8
+"SOR4.exe"+3B17B8: 48 8B F9                    -  mov rdi,rcx
+}
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>19</ID>
+      <Description>"Camera Structure"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+assert("SOR4.exe"+3B232B,F3 0F 7F 47 30 48 8B C7 0F 28 B4 24 40)
+define(camera,"SOR4.exe"+3B232B)
+registersymbol(camera)
+
+alloc(cameraMem,$1000,"SOR4.exe"+3B232B)
+registersymbol(cameraMem)
+
+define(camBase,cameraMem+100)
+registersymbol(camBase)
+
+define(camCheck,cameraMem+108)
+registersymbol(camCheck)
+
+label(cleanup code return)
+
+camBase:
+  dq 0
+
+camCheck:
+  db 0
+
+cameraMem:
+  pushf
+  mov [camBase],rdi // Get the camera structure's base address
+  cmp [camCheck],1 // Check flag to see if custom writes should be enabled
+  jne cleanup
+  popf
+  jmp return
+
+cleanup:
+  popf
+
+code:
+  movdqu [rdi+30],xmm0
+  jmp return
+
+camera:
+  jmp cameraMem
+
+return:
+
+[DISABLE]
+camera:
+  db F3 0F 7F 47 30
+
+unregistersymbol(camera cameraMem camBase camCheck)
+dealloc(cameraMem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "SOR4.exe"+3B1CBB
+
+"SOR4.exe"+3B1C7A: 48 8D 54 24 70              -  lea rdx,[rsp+70]
+"SOR4.exe"+3B1C7F: 4C 8D 44 24 30              -  lea r8,[rsp+30]
+"SOR4.exe"+3B1C84: E8 47 D9 06 00              -  call SOR4.exe+41F5D0
+"SOR4.exe"+3B1C89: F3 0F 6F 84 24 08 01 00 00  -  movdqu xmm0,[rsp+00000108]
+"SOR4.exe"+3B1C92: F3 0F 7F 07                 -  movdqu [rdi],xmm0
+"SOR4.exe"+3B1C96: F3 0F 6F 84 24 18 01 00 00  -  movdqu xmm0,[rsp+00000118]
+"SOR4.exe"+3B1C9F: F3 0F 7F 47 10              -  movdqu [rdi+10],xmm0
+"SOR4.exe"+3B1CA4: F3 0F 6F 84 24 28 01 00 00  -  movdqu xmm0,[rsp+00000128]
+"SOR4.exe"+3B1CAD: F3 0F 7F 47 20              -  movdqu [rdi+20],xmm0
+"SOR4.exe"+3B1CB2: F3 0F 6F 84 24 38 01 00 00  -  movdqu xmm0,[rsp+00000138]
+// ---------- INJECTING HERE ----------
+"SOR4.exe"+3B1CBB: F3 0F 7F 47 30              -  movdqu [rdi+30],xmm0
+// ---------- DONE INJECTING  ----------
+"SOR4.exe"+3B1CC0: 48 8B C7                    -  mov rax,rdi
+"SOR4.exe"+3B1CC3: 0F 28 B4 24 40 03 00 00     -  movaps xmm6,[rsp+00000340]
+"SOR4.exe"+3B1CCB: 0F 28 BC 24 30 03 00 00     -  movaps xmm7,[rsp+00000330]
+"SOR4.exe"+3B1CD3: 48 81 C4 58 03 00 00        -  add rsp,00000358
+"SOR4.exe"+3B1CDA: 5E                          -  pop rsi
+"SOR4.exe"+3B1CDB: 5F                          -  pop rdi
+"SOR4.exe"+3B1CDC: C3                          -  ret 
+"SOR4.exe"+3B1CDD: 90                          -  nop 
+"SOR4.exe"+3B1CDE: 90                          -  nop 
+"SOR4.exe"+3B1CDF: 90                          -  nop 
+}
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>41</ID>
+          <Description>"Scripts"</Description>
+          <LastState Value="" RealAddress="00000000"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>24</ID>
+              <Description>"Enable Custom Writes"</Description>
+              <LastState/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>{$lua}
+if syntaxcheck then return end
+
+[ENABLE]
+writeBytes("camCheck", 0x01)
+
+[DISABLE]
+writeBytes("camCheck", 0x00)
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>26</ID>
+              <Description>"Fly Camera"</Description>
+              <LastState/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>{$lua}
+if syntaxcheck then return end
+
+[ENABLE]
+-- Enable custom values to be written
+writeBytes("camCheck", 0x01)
+
+local bCamX = readFloat("[camBase]+30")
+local bCamY = readFloat("[camBase]+34")
+local bClippingZoom = readFloat("[camBase]+38")
+local bZoom = readFloat("[camBase]+3C")
+
+-- Reset cam values to backed-up versions
+function reset()
+  writeFloat("[camBase]+30", bCamX)
+  writeFloat("[camBase]+34", bCamY)
+  writeFloat("[camBase]+38", bClippingZoom)
+  writeFloat("[camBase]+3C", bZoom)
+end
+
+-- Camera move speed values
+function speedCheck()
+  if isKeyPressed(VK_P) or isKeyPressed(VK_O) then
+    if isKeyPressed(VK_C) then
+      return .1
+    end
+
+    return .01
+  end
+
+  if isKeyPressed(VK_C) then
+    return 1.5
+  end
+
+  return .3
+end
+
+-- Watch for keypresses and handle accordingly
+function keyCheck()
+  -- Up
+  if isKeyPressed(VK_Y) then
+    local camY = readFloat("[camBase]+34")
+    writeFloat("[camBase]+34", camY - speedCheck())
+  end
+
+  -- Down
+  if isKeyPressed(VK_H) then
+    local camY = readFloat("[camBase]+34")
+    writeFloat("[camBase]+34", camY + speedCheck())
+  end
+
+  -- Left
+  if isKeyPressed(VK_G) then
+    local camX = readFloat("[camBase]+30")
+    writeFloat("[camBase]+30", camX + speedCheck())
+  end
+
+  -- Right
+  if isKeyPressed(VK_J) then
+    local camX = readFloat("[camBase]+30")
+    writeFloat("[camBase]+30", camX - speedCheck())
+  end
+
+  -- Zoom in
+  if isKeyPressed(VK_MENU) and isKeyPressed(VK_LBUTTON) then
+    local zoom = readFloat("[camBase]+3C")
+    writeFloat("[camBase]+3C", zoom - speedCheck())
+  end
+
+  -- Zoom out
+  if isKeyPressed(VK_MENU) and isKeyPressed(VK_RBUTTON) then
+    local zoom = readFloat("[camBase]+3C")
+    writeFloat("[camBase]+3C", zoom + speedCheck())
+  end
+
+  -- Clipping plane increase
+  if isKeyPressed(VK_P) then
+    local clippingPlane = readFloat("[camBase]+38")
+    if (clippingPlane &lt; 13) then
+      writeFloat("[camBase]+38", clippingPlane + speedCheck())
+    end
+  end
+
+  -- Clipping plane decrease
+  if isKeyPressed(VK_O) then
+    local clippingPlane = readFloat("[camBase]+38")
+    if (clippingPlane &gt; -40) then
+      writeFloat("[camBase]+38", clippingPlane - speedCheck())
+    end
+  end
+
+  -- Reset camera values
+  if isKeyPressed(VK_SHIFT) and isKeyPressed(VK_R) then
+    reset()
+  end
+
+end
+
+function timerStart(timer)
+  t=createTimer()
+  t.OnTimer=keyCheck
+  t.Interval=10
+  t.Enabled=true
+end
+
+timerStart(t)
+
+[DISABLE]
+t.destroy()
+writeBytes("camCheck", 0x00)
+</AssemblerScript>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>39</ID>
+          <Description>"Camera Offsets"</Description>
+          <LastState Value="" RealAddress="00000000"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>27</ID>
+              <Description>"X"</Description>
+              <VariableType>Float</VariableType>
+              <Address>[camBase]+30</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>21</ID>
+              <Description>"Y"</Description>
+              <VariableType>Float</VariableType>
+              <Address>[camBase]+34</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>22</ID>
+              <Description>"Clipping Plane"</Description>
+              <VariableType>Float</VariableType>
+              <Address>[camBase]+38</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>23</ID>
+              <Description>"Zoom"</Description>
+              <VariableType>Float</VariableType>
+              <Address>[camBase]+3C</Address>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
