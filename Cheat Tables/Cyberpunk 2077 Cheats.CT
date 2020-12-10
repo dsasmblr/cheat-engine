@@ -4,7 +4,7 @@
     <CheatEntry>
       <ID>12</ID>
       <Description>"Infinite Ammo"</Description>
-      <LastState/>
+      <LastState Activated="1"/>
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>[ENABLE]
 aobscanmodule(infAmmo,Cyberpunk2077.exe,75 7F 48 8D 8E 28 03 00 00)
@@ -66,7 +66,7 @@ Cyberpunk2077.exe+1A7E632: E8 49 39 FE FF           - call Cyberpunk2077.exe+1A6
     <CheatEntry>
       <ID>23</ID>
       <Description>"Infinite Health"</Description>
-      <LastState/>
+      <LastState Activated="1"/>
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>[ENABLE]
 aobscanmodule(infHealth,Cyberpunk2077.exe,8B 85 90 01 00 00 41 89)
@@ -130,6 +130,110 @@ Cyberpunk2077.exe+1953586: 41 88 86 9D 01 00 00     - mov [r14+0000019D],al
 Cyberpunk2077.exe+195358D: 0F B6 85 9E 01 00 00     - movzx eax,byte ptr [rbp+0000019E]
 }
 </AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>36</ID>
+      <Description>"Experience Script"</Description>
+      <Options moHideChildren="1"/>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+aobscanmodule(infExp,Cyberpunk2077.exe,41 8B 00 89 02 C3)
+alloc(newmem,$1000,infExp)
+
+label(code)
+label(return)
+
+newmem:
+  pushf
+  cmp r10d,1
+  jne @f
+  push rax
+  mov rax,10000000000
+  cmp r8,rax
+  pop rax
+  jl @f
+  mov [newmem+620],r8 // Perk Points
+  @@:
+  cmp r10d,1A
+  jne @f
+  cmp r13d,0
+  je @f
+  cmp [rbp+10],B
+  jne @f
+  mov [newmem+600],r8 // Experience Points
+  @@:
+  popf
+
+code:
+  mov eax,[r8]
+  mov [rdx],eax
+  jmp return
+
+infExp:
+  jmp newmem
+return:
+registersymbol(infExp newmem)
+
+[DISABLE]
+
+infExp:
+  db 41 8B 00 89 02
+
+unregistersymbol(infExp newmem)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: Cyberpunk2077.AK::WriteBytesMem::Size+7FE0
+
+Cyberpunk2077.AK::WriteBytesMem::Size+7FD6: CC        - int 3 
+Cyberpunk2077.AK::WriteBytesMem::Size+7FD7: CC        - int 3 
+Cyberpunk2077.AK::WriteBytesMem::Size+7FD8: CC        - int 3 
+Cyberpunk2077.AK::WriteBytesMem::Size+7FD9: CC        - int 3 
+Cyberpunk2077.AK::WriteBytesMem::Size+7FDA: CC        - int 3 
+Cyberpunk2077.AK::WriteBytesMem::Size+7FDB: CC        - int 3 
+Cyberpunk2077.AK::WriteBytesMem::Size+7FDC: CC        - int 3 
+Cyberpunk2077.AK::WriteBytesMem::Size+7FDD: CC        - int 3 
+Cyberpunk2077.AK::WriteBytesMem::Size+7FDE: CC        - int 3 
+Cyberpunk2077.AK::WriteBytesMem::Size+7FDF: CC        - int 3 
+// ---------- INJECTING HERE ----------
+Cyberpunk2077.AK::WriteBytesMem::Size+7FE0: 41 8B 00  - mov eax,[r8]
+// ---------- DONE INJECTING  ----------
+Cyberpunk2077.AK::WriteBytesMem::Size+7FE3: 89 02     - mov [rdx],eax
+Cyberpunk2077.AK::WriteBytesMem::Size+7FE5: C3        - ret 
+Cyberpunk2077.AK::WriteBytesMem::Size+7FE6: CC        - int 3 
+Cyberpunk2077.AK::WriteBytesMem::Size+7FE7: CC        - int 3 
+Cyberpunk2077.AK::WriteBytesMem::Size+7FE8: CC        - int 3 
+Cyberpunk2077.AK::WriteBytesMem::Size+7FE9: CC        - int 3 
+Cyberpunk2077.AK::WriteBytesMem::Size+7FEA: CC        - int 3 
+Cyberpunk2077.AK::WriteBytesMem::Size+7FEB: CC        - int 3 
+Cyberpunk2077.AK::WriteBytesMem::Size+7FEC: CC        - int 3 
+Cyberpunk2077.AK::WriteBytesMem::Size+7FED: CC        - int 3 
+}
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>37</ID>
+          <Description>"Experience"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>[newmem+600]</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>42</ID>
+          <Description>"Attribute Points"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>[newmem+620]-C</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>41</ID>
+          <Description>"Perk Points"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>[newmem+620]</Address>
+        </CheatEntry>
+      </CheatEntries>
     </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>
@@ -1448,6 +1552,63 @@ Cyberpunk2077.exe+195358D: 0F B6 85 9E 01 00 00     - movzx eax,byte ptr [rbp+00
         <Element Offset="4064" Vartype="4 Bytes" Bytesize="4" RLECount="3" OffsetHex="00000FE0" DisplayMethod="Unsigned Integer"/>
         <Element Offset="4076" Vartype="4 Bytes" Bytesize="4" RLECount="2" OffsetHex="00000FEC" DisplayMethod="Hexadecimal"/>
         <Element Offset="4084" Vartype="4 Bytes" Bytesize="4" RLECount="3" OffsetHex="00000FF4" DisplayMethod="Unsigned Integer"/>
+      </Elements>
+    </Structure>
+    <Structure Name="unnamed structure" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+      <Elements>
+        <Element Offset="0" Vartype="4 Bytes" Bytesize="4" RLECount="4" OffsetHex="00000000" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="16" Vartype="Pointer" Bytesize="8" OffsetHex="00000010" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="24" Vartype="4 Bytes" Bytesize="4" RLECount="4" OffsetHex="00000018" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="40" Vartype="Pointer" Bytesize="8" RLECount="2" OffsetHex="00000028" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="56" Vartype="4 Bytes" Bytesize="4" RLECount="2" OffsetHex="00000038" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="64" Vartype="Pointer" Bytesize="8" RLECount="2" OffsetHex="00000040" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="80" Vartype="4 Bytes" Bytesize="4" RLECount="2" OffsetHex="00000050" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="88" Vartype="Pointer" Bytesize="8" RLECount="2" OffsetHex="00000058" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="104" Vartype="4 Bytes" Bytesize="4" RLECount="2" OffsetHex="00000068" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="112" Vartype="Pointer" Bytesize="8" RLECount="2" OffsetHex="00000070" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="128" Vartype="4 Bytes" Bytesize="4" RLECount="2" OffsetHex="00000080" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="136" Vartype="Pointer" Bytesize="8" OffsetHex="00000088" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="144" Vartype="4 Bytes" Bytesize="4" RLECount="4" OffsetHex="00000090" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="160" Vartype="Pointer" Bytesize="8" OffsetHex="000000A0" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="168" Vartype="4 Bytes" Bytesize="4" RLECount="4" OffsetHex="000000A8" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="184" Vartype="Pointer" Bytesize="8" OffsetHex="000000B8" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="192" Vartype="4 Bytes" Bytesize="4" RLECount="4" OffsetHex="000000C0" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="208" Vartype="Pointer" Bytesize="8" OffsetHex="000000D0" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="216" Vartype="4 Bytes" Bytesize="4" RLECount="4" OffsetHex="000000D8" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="232" Vartype="Pointer" Bytesize="8" OffsetHex="000000E8" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="240" Vartype="4 Bytes" Bytesize="4" RLECount="4" OffsetHex="000000F0" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="256" Vartype="Pointer" Bytesize="8" OffsetHex="00000100" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="264" Vartype="4 Bytes" Bytesize="4" RLECount="28" OffsetHex="00000108" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="376" Vartype="Pointer" Bytesize="8" OffsetHex="00000178" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="384" Vartype="4 Bytes" Bytesize="4" RLECount="116" OffsetHex="00000180" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="848" Vartype="Pointer" Bytesize="8" OffsetHex="00000350" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="856" Vartype="4 Bytes" Bytesize="4" RLECount="462" OffsetHex="00000358" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="2704" Vartype="Pointer" Bytesize="8" OffsetHex="00000A90" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="2712" Vartype="4 Bytes" Bytesize="4" RLECount="2" OffsetHex="00000A98" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="2720" Vartype="Pointer" Bytesize="8" RLECount="2" OffsetHex="00000AA0" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="2736" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000AB0" DisplayMethod="Hexadecimal"/>
+        <Element Offset="2740" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000AB4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="2744" Vartype="Pointer" Bytesize="8" RLECount="2" OffsetHex="00000AB8" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="2760" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000AC8" DisplayMethod="Hexadecimal"/>
+        <Element Offset="2764" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000ACC" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="2768" Vartype="Pointer" Bytesize="8" RLECount="2" OffsetHex="00000AD0" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="2784" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000AE0" DisplayMethod="Hexadecimal"/>
+        <Element Offset="2788" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000AE4" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="2792" Vartype="Pointer" Bytesize="8" RLECount="2" OffsetHex="00000AE8" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="2808" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000AF8" DisplayMethod="Hexadecimal"/>
+        <Element Offset="2812" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000AFC" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="2816" Vartype="Pointer" Bytesize="8" RLECount="2" OffsetHex="00000B00" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="2832" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000B10" DisplayMethod="Hexadecimal"/>
+        <Element Offset="2836" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000B14" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="2840" Vartype="Pointer" Bytesize="8" RLECount="2" OffsetHex="00000B18" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="2856" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000B28" DisplayMethod="Hexadecimal"/>
+        <Element Offset="2860" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000B2C" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="2864" Vartype="Pointer" Bytesize="8" OffsetHex="00000B30" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="2872" Vartype="4 Bytes" Bytesize="4" RLECount="72" OffsetHex="00000B38" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="3160" Vartype="Pointer" Bytesize="8" OffsetHex="00000C58" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="3168" Vartype="4 Bytes" Bytesize="4" RLECount="116" OffsetHex="00000C60" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="3632" Vartype="Pointer" Bytesize="8" OffsetHex="00000E30" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="3640" Vartype="4 Bytes" Bytesize="4" RLECount="114" OffsetHex="00000E38" DisplayMethod="Unsigned Integer"/>
       </Elements>
     </Structure>
   </Structures>
