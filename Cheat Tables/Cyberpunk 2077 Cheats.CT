@@ -4,7 +4,7 @@
     <CheatEntry>
       <ID>12</ID>
       <Description>"Infinite Ammo"</Description>
-      <LastState Activated="1"/>
+      <LastState/>
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>[ENABLE]
 aobscanmodule(infAmmo,Cyberpunk2077.exe,75 7F 48 8D 8E 28 03 00 00)
@@ -66,7 +66,7 @@ Cyberpunk2077.exe+1A7E632: E8 49 39 FE FF           - call Cyberpunk2077.exe+1A6
     <CheatEntry>
       <ID>23</ID>
       <Description>"Infinite Health"</Description>
-      <LastState Activated="1"/>
+      <LastState/>
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>[ENABLE]
 aobscanmodule(infHealth,Cyberpunk2077.exe,8B 85 90 01 00 00 41 89)
@@ -133,9 +133,9 @@ Cyberpunk2077.exe+195358D: 0F B6 85 9E 01 00 00     - movzx eax,byte ptr [rbp+00
     </CheatEntry>
     <CheatEntry>
       <ID>36</ID>
-      <Description>"Experience Script"</Description>
+      <Description>"Enable Me!"</Description>
       <Options moHideChildren="1"/>
-      <LastState/>
+      <LastState Activated="1"/>
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>[ENABLE]
 aobscanmodule(infExp,Cyberpunk2077.exe,41 8B 00 89 02 C3)
@@ -218,6 +218,13 @@ Cyberpunk2077.AK::WriteBytesMem::Size+7FED: CC        - int 3
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>4 Bytes</VariableType>
           <Address>[newmem+600]</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>43</ID>
+          <Description>"Street Cred"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>[newmem+600]+38</Address>
         </CheatEntry>
         <CheatEntry>
           <ID>42</ID>
@@ -1612,7 +1619,7 @@ Cyberpunk2077.AK::WriteBytesMem::Size+7FED: CC        - int 3
       </Elements>
     </Structure>
   </Structures>
-  <Comments>.
+  <Comments>Street Cred Groupscan - 4:0 4:1000 4:* 4:* 4:* 4:* 4:* 4:* 4:* 4:* 4:* 4:* 4:* 4:* 4:0 4:1000
 .
 .
 .
