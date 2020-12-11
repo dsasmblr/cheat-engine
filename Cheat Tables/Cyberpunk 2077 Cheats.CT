@@ -2,38 +2,24 @@
 <CheatTable CheatEngineTableVersion="34">
   <CheatEntries>
     <CheatEntry>
-      <ID>12</ID>
-      <Description>"Infinite Ammo"</Description>
+      <ID>49</ID>
+      <Description>"Infinite Ammo and No Reload"</Description>
       <LastState/>
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>[ENABLE]
 aobscanmodule(infAmmo,Cyberpunk2077.exe,75 7F 48 8D 8E 28 03 00 00)
-alloc(newmem,$1000,infAmmo)
-
-label(code)
-label(return)
-
-newmem:
-
-code:
-  jmp Cyberpunk2077.exe+1A7E686
-  lea rcx,[rsi+00000328]
-  jmp return
-
-infAmmo:
-  jmp newmem
-  nop 4
-return:
 registersymbol(infAmmo)
 
-[DISABLE]
-
 infAmmo:
-  db 75 7F 48 8D 8E 28 03 00 00
+  db EB 7F // jmp Cyberpunk2077.exe+1A7E466
+
+[DISABLE]
+infAmmo:
+  db 75 7F // jne Cyberpunk2077.exe+1A7E466
 
 unregistersymbol(infAmmo)
-dealloc(newmem)
 
+// Release
 {
 // ORIGINAL CODE - INJECTION POINT: Cyberpunk2077.exe+1A7E605
 
@@ -60,6 +46,35 @@ Cyberpunk2077.exe+1A7E624: 44 0F B7 E1              - movzx r12d,cx
 Cyberpunk2077.exe+1A7E628: 48 8B 8E 98 03 00 00     - mov rcx,[rsi+00000398]
 Cyberpunk2077.exe+1A7E62F: 41 8B D4                 - mov edx,r12d
 Cyberpunk2077.exe+1A7E632: E8 49 39 FE FF           - call Cyberpunk2077.exe+1A61F80
+}
+
+//Update 1
+{
+// ORIGINAL CODE - INJECTION POINT: Cyberpunk2077.exe+1A7E3E5
+
+Cyberpunk2077.exe+1A7E3B5: 48 8B 86 00 02 00 00     - mov rax,[rsi+00000200]
+Cyberpunk2077.exe+1A7E3BC: 48 89 45 C0              - mov [rbp-40],rax
+Cyberpunk2077.exe+1A7E3C0: 0F B6 9E 44 03 00 00     - movzx ebx,byte ptr [rsi+00000344]
+Cyberpunk2077.exe+1A7E3C7: 49 8B CF                 - mov rcx,r15
+Cyberpunk2077.exe+1A7E3CA: 4C 89 A4 24 18 03 00 00  - mov [rsp+00000318],r12
+Cyberpunk2077.exe+1A7E3D2: E8 59 E6 FE FF           - call Cyberpunk2077.exe+1A6CA30
+Cyberpunk2077.exe+1A7E3D7: 0F B7 F8                 - movzx edi,ax
+Cyberpunk2077.exe+1A7E3DA: 66 85 C0                 - test ax,ax
+Cyberpunk2077.exe+1A7E3DD: 0F 84 45 02 00 00        - je Cyberpunk2077.exe+1A7E628
+Cyberpunk2077.exe+1A7E3E3: 84 DB                    - test bl,bl
+// ---------- INJECTING HERE ----------
+Cyberpunk2077.exe+1A7E3E5: 75 7F                    - jne Cyberpunk2077.exe+1A7E466
+// ---------- DONE INJECTING  ----------
+Cyberpunk2077.exe+1A7E3E7: 48 8D 8E 28 03 00 00     - lea rcx,[rsi+00000328]
+Cyberpunk2077.exe+1A7E3EE: E8 9D F1 FF 00           - call Cyberpunk2077.exe+2A7D590
+Cyberpunk2077.exe+1A7E3F3: 0F B7 8E 40 03 00 00     - movzx ecx,word ptr [rsi+00000340]
+Cyberpunk2077.exe+1A7E3FA: 66 3B CF                 - cmp cx,di
+Cyberpunk2077.exe+1A7E3FD: 66 0F 46 F9              - cmovbe di,cx
+Cyberpunk2077.exe+1A7E401: 66 2B CF                 - sub cx,di
+Cyberpunk2077.exe+1A7E404: 44 0F B7 E1              - movzx r12d,cx
+Cyberpunk2077.exe+1A7E408: 48 8B 8E 98 03 00 00     - mov rcx,[rsi+00000398]
+Cyberpunk2077.exe+1A7E40F: 41 8B D4                 - mov edx,r12d
+Cyberpunk2077.exe+1A7E412: E8 49 39 FE FF           - call Cyberpunk2077.exe+1A61D60
 }
 </AssemblerScript>
     </CheatEntry>
@@ -245,7 +260,6 @@ Cyberpunk2077.AK::WriteBytesMem::Size+7FED: CC        - int 3
     <CheatEntry>
       <ID>46</ID>
       <Description>"PhysX DLL Pointer Weight"</Description>
-      <LastState Value="0" RealAddress="217D53E8B88"/>
       <VariableType>Float</VariableType>
       <Address>"PhysX3_x64.dll"+0025D5D8</Address>
       <Offsets>
@@ -288,6 +302,76 @@ timer()
 [DISABLE]
 t.destroy()
 </AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>50</ID>
+      <Description>"--// Old Scripts (Broken from Updates or Improved Now)"</Description>
+      <LastState Value="" RealAddress="00000000"/>
+      <GroupHeader>1</GroupHeader>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>12</ID>
+          <Description>"Infinite Ammo"</Description>
+          <LastState/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+aobscanmodule(infAmmo,Cyberpunk2077.exe,75 7F 48 8D 8E 28 03 00 00)
+alloc(newmem,$1000,infAmmo)
+
+label(code)
+label(return)
+
+newmem:
+
+code:
+  jmp Cyberpunk2077.exe+1A7E686
+  lea rcx,[rsi+00000328]
+  jmp return
+
+infAmmo:
+  jmp newmem
+  nop 4
+return:
+registersymbol(infAmmo)
+
+[DISABLE]
+
+infAmmo:
+  db 75 7F 48 8D 8E 28 03 00 00
+
+unregistersymbol(infAmmo)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: Cyberpunk2077.exe+1A7E605
+
+Cyberpunk2077.exe+1A7E5D5: 48 8B 86 00 02 00 00     - mov rax,[rsi+00000200]
+Cyberpunk2077.exe+1A7E5DC: 48 89 45 C0              - mov [rbp-40],rax
+Cyberpunk2077.exe+1A7E5E0: 0F B6 9E 44 03 00 00     - movzx ebx,byte ptr [rsi+00000344]
+Cyberpunk2077.exe+1A7E5E7: 49 8B CF                 - mov rcx,r15
+Cyberpunk2077.exe+1A7E5EA: 4C 89 A4 24 18 03 00 00  - mov [rsp+00000318],r12
+Cyberpunk2077.exe+1A7E5F2: E8 59 E6 FE FF           - call Cyberpunk2077.exe+1A6CC50
+Cyberpunk2077.exe+1A7E5F7: 0F B7 F8                 - movzx edi,ax
+Cyberpunk2077.exe+1A7E5FA: 66 85 C0                 - test ax,ax
+Cyberpunk2077.exe+1A7E5FD: 0F 84 45 02 00 00        - je Cyberpunk2077.exe+1A7E848
+Cyberpunk2077.exe+1A7E603: 84 DB                    - test bl,bl
+// ---------- INJECTING HERE ----------
+Cyberpunk2077.exe+1A7E605: 75 7F                    - jne Cyberpunk2077.exe+1A7E686
+// ---------- DONE INJECTING  ----------
+Cyberpunk2077.exe+1A7E607: 48 8D 8E 28 03 00 00     - lea rcx,[rsi+00000328]
+Cyberpunk2077.exe+1A7E60E: E8 0D E1 FF 00           - call Cyberpunk2077.exe+2A7C720
+Cyberpunk2077.exe+1A7E613: 0F B7 8E 40 03 00 00     - movzx ecx,word ptr [rsi+00000340]
+Cyberpunk2077.exe+1A7E61A: 66 3B CF                 - cmp cx,di
+Cyberpunk2077.exe+1A7E61D: 66 0F 46 F9              - cmovbe di,cx
+Cyberpunk2077.exe+1A7E621: 66 2B CF                 - sub cx,di
+Cyberpunk2077.exe+1A7E624: 44 0F B7 E1              - movzx r12d,cx
+Cyberpunk2077.exe+1A7E628: 48 8B 8E 98 03 00 00     - mov rcx,[rsi+00000398]
+Cyberpunk2077.exe+1A7E62F: 41 8B D4                 - mov edx,r12d
+Cyberpunk2077.exe+1A7E632: E8 49 39 FE FF           - call Cyberpunk2077.exe+1A61F80
+}
+</AssemblerScript>
+        </CheatEntry>
+      </CheatEntries>
     </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>
