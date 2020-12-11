@@ -135,7 +135,7 @@ Cyberpunk2077.exe+195358D: 0F B6 85 9E 01 00 00     - movzx eax,byte ptr [rbp+00
       <ID>36</ID>
       <Description>"Enable Me!"</Description>
       <Options moHideChildren="1"/>
-      <LastState Activated="1"/>
+      <LastState/>
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>[ENABLE]
 aobscanmodule(infExp,Cyberpunk2077.exe,41 8B 00 89 02 C3)
@@ -241,6 +241,53 @@ Cyberpunk2077.AK::WriteBytesMem::Size+7FED: CC        - int 3
           <Address>[newmem+620]</Address>
         </CheatEntry>
       </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>46</ID>
+      <Description>"PhysX DLL Pointer Weight"</Description>
+      <LastState Value="0" RealAddress="217D53E8B88"/>
+      <VariableType>Float</VariableType>
+      <Address>"PhysX3_x64.dll"+0025D5D8</Address>
+      <Offsets>
+        <Offset>498</Offset>
+        <Offset>38</Offset>
+        <Offset>188</Offset>
+        <Offset>1F8</Offset>
+        <Offset>8</Offset>
+        <Offset>0</Offset>
+        <Offset>8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>47</ID>
+      <Description>"No Carry Weight"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+if syntaxcheck then return end
+
+[ENABLE]
+function setWeightToZero()
+  local weight="[[[[[[[PhysX3_x64.dll+25D5D8]+8]+0]+8]+1F8]+188]+38]+498"
+  local weightCheck=readFloat(weight)
+
+  if weightCheck~=nil then
+    writeFloat(weight,0)
+  end
+end
+
+function timer()
+  t=createTimer()
+  t.OnTimer=setWeightToZero
+  t.Interval=10
+  t.Enabled=true
+end
+
+timer()
+
+[DISABLE]
+t.destroy()
+</AssemblerScript>
     </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>
